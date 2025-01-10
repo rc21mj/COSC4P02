@@ -12,6 +12,7 @@
 | Nadine Hoda - Developer  | 7597545       |
 | Ritika Chaudhary - Developer  | 7392459        |
 | Karan Arora - Developer  | 6226120        |
+| Charmvir Grewal - Developer  | 7026057        |
 
 ## Contact
 
