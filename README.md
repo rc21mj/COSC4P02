@@ -1,4 +1,4 @@
-# AI Powered Social Media Content Generator
+<h1 align="center">AI Powered Social Media Content Generator</h1>
 
 ## COSC 4P02 Team Project
 
