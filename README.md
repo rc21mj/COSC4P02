@@ -9,6 +9,7 @@
 |--------------------------|----------------|
 | Will Yochim - Role  | 630924        |
 | Nadine Hoda - Role  | 7597545       |
+| Ritika Chaudhary - Role  | 7392459        |
 
 ## Contact
 
