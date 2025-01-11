@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="PostPioneer.png" alt="Post Pioneer Logo" width="200">
+  <img src="PostPioneer.png" alt="Post Pioneer Logo" width="100">
 </p>
 
 <h1 align="center">Post Pioneer</h1>
