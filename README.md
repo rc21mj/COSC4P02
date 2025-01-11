@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="path/to/logo.png" alt="Project Logo" width="200" style="border-radius: 50%;">
+  <img src="PostPioneer.png" alt="Post Pioneer Logo" width="200" style="border-radius: 50%;">
 </p>
 
 <h1 align="center">Post Pioneer</h1>
