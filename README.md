@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="PostPioneer.png" alt="Post Pioneer Logo" width="200" style="border-radius: 50%;">
+  <img src="PostPioneer.png" alt="Post Pioneer" width="110">
 </p>
+
+<h1 align="center">Niagara-on-the-Lake Timeline</h1>
 
 <h1 align="center">Post Pioneer</h1>
 
