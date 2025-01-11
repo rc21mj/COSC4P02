@@ -2,8 +2,6 @@
   <img src="PostPioneer.png" alt="Post Pioneer" width="110">
 </p>
 
-<h1 align="center">Niagara-on-the-Lake Timeline</h1>
-
 <h1 align="center">Post Pioneer</h1>
 
 ## COSC 4P02 Team Project
