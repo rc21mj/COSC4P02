@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="PostPioneer.png" alt="Post Pioneer Logo" width="200">
+</p>
+
 <h1 align="center">Post Pioneer</h1>
 
 ## COSC 4P02 Team Project
