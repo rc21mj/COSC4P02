@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -36,12 +37,18 @@ func main() {
 	// Route to handle form submission
 	app.Post("/submit", func(c *fiber.Ctx) error {
 		tone := c.FormValue("tone")
-		response1 := fmt.Sprintf("You selected the tone: %s", tone)
 		topic := c.FormValue("topic")
-		response2 := fmt.Sprintf("You selected the topic: %s", topic)
 		schedule := c.FormValue("schedule")
-		response3 := fmt.Sprintf("You selected the schedule: %s", schedule)
-		response := fmt.Sprintf("%s\n%s\n%s", response1, response2, response3)
+
+		// Call save.py with arguments
+		cmd := exec.Command("python3", "save.py", tone, topic, schedule)
+		err := cmd.Run()
+		if err != nil {
+			fmt.Println("Error running Python script:", err)
+			return c.Status(500).SendString("Failed to save data")
+		}
+
+		response := fmt.Sprintf("Saved: Tone=%s, Topic=%s, Schedule=%s", tone, topic, schedule)
 		return c.SendString(response)
 	})
 
