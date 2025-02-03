@@ -72,7 +72,7 @@ func main() {
 		schedule := c.FormValue("schedule")
 
 		// Call save.py with arguments
-		cmd := exec.Command("python3", "save.py", tone, topic, schedule)
+		cmd := exec.Command("python3", "Save.py", tone, topic, schedule)
 		err := cmd.Run()
 		if err != nil {
 			fmt.Println("Error running Python script:", err)
