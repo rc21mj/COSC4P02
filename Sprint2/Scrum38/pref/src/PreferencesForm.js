@@ -6,6 +6,7 @@ const PreferencesForm = () => {
     tone: "formal",
     topic: "",
     schedule: "daily",
+    edit: false
   });
 
   const [message, setMessage] = useState("");
@@ -68,6 +69,13 @@ const PreferencesForm = () => {
           <option value="weekly">Weekly</option>
           <option value="monthly">Monthly</option>
         </select>
+
+        <label style={{ fontWeight: "bold" }}>Review & Edit Post before Posting:</label>
+        <select name="edit" value={formData.tone} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
+          <option value="false">false</option>
+          <option value="true">true</option>
+        </select>
+
 
         <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "white", border: "none" }}>
           Submit Preferences
