@@ -34,4 +34,4 @@ def submit():
     return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}"}), 200
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)  # Run Flask on port 5000
+    app.run(debug=True, port=3000)  # Run Flask on port 5000

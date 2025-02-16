@@ -42,7 +42,7 @@ def generate_text(tone, topic, schedule):
 if __name__ == "__main__":
     last_response = get_last_response()
     if last_response:
-        tone, topic, schedule = last_response
+        tone, topic, schedule, edit = last_response
         generated_text = generate_text(tone, topic, schedule)
 
         if generated_text:
