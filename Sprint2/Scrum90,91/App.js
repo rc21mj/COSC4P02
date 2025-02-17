@@ -54,6 +54,7 @@ function App() {
 	}).catch((error) => {
 		console.error("Sign out error:", error);
 	});
+	window.location = '/login'
   };
   return (
     <div className="App">
