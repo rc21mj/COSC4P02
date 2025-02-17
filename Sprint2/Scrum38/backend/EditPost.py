@@ -25,18 +25,18 @@ def index():
     posts = read_csv()
     return render_template('index.html', posts=posts)
 
-@app.route('/edit/<int:id>', methods=['POST'])
-def edit_post(id):
+@app.route('/edit', methods=['POST'])
+def edit_post():
     new_post = request.form['post']
+    index = int(request.form['index'])  # Get the row index from the request
     posts = read_csv()
 
-    for post in posts:
-        if int(post['id']) == id:
-            post['Generated_Post'] = new_post
-            break
-    
-    save_csv(posts)
-    return jsonify({'status': 'success', 'post': new_post})
+    if posts[index]['Edit'].lower() == 'true':  # Ensure editing is allowed
+        posts[index]['Generated_Post'] = new_post
+        save_csv(posts)
+        return jsonify({'status': 'success', 'post': new_post})
+    else:
+        return jsonify({'status': 'error', 'message': 'Editing not allowed'}), 403
 
 if __name__ == "__main__":
     app.run(debug=True)
