@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Posts</title>
+    <script>
+        function enableEditing(id) {
+            var postElement = document.getElementById('post-' + id);
+            var editButton = document.getElementById('edit-button-' + id);
+            var saveButton = document.getElementById('save-button-' + id);
+
+            // Allow user to edit the post
+            postElement.contentEditable = true;
+            postElement.style.border = "1px solid #ccc";
+            postElement.style.padding = "5px";
+
+            // Toggle buttons
+            editButton.style.display = "none";
+            saveButton.style.display = "inline-block";
+        }
+
+        function savePost(id) {
+            var postElement = document.getElementById('post-' + id);
+            var updatedPost = postElement.innerText;
+
+            fetch(`/edit/${id}`, {
+                method: 'POST',
+                body: new URLSearchParams('post=' + updatedPost),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update content and toggle buttons
+                postElement.contentEditable = false;
+                postElement.style.border = "none";
+                postElement.style.padding = "0";
+
+                document.getElementById('edit-button-' + id).style.display = "inline-block";
+                document.getElementById('save-button-' + id).style.display = "none";
+                alert("Post saved successfully!");
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Posts</h1>
+
+    {% for post in posts %}
+        <div class="post-container">
+            <div id="post-{{ loop.index }}" class="post">
+                <p>{{ post.Generated_Post }}</p>
+            </div>
+
+            {% if post.Edit == 'true' %}
+                <button id="edit-button-{{ loop.index }}" onclick="enableEditing({{loop.index}})">Edit</button>
+                <button id="save-button-{{ loop.index }}" style="display:none" onclick="savePost({{loop.index}})">Save</button>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>

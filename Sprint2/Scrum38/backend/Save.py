@@ -22,16 +22,17 @@ def submit():
     # Save data to CSV
     file_exists = os.path.exists(CSV_FILE)
 
+
     with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
 
         # Write header if file is new
         if not file_exists:
-            writer.writerow(["Tone", "Topic", "Schedule", "Edit"])
+            writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
 
-        writer.writerow([tone, topic, schedule, edit])
+        writer.writerow([tone, topic, schedule, edit, ""])
 
     return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}"}), 200
 
 if __name__ == "__main__":
-    app.run(debug=True, port=3000)  # Run Flask on port 5000
+    app.run(debug=True, port=3000)  # Run Flask on port 3000

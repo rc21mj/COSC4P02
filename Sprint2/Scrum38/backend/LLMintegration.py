@@ -15,7 +15,7 @@ def get_last_response():
             print("CSV file is empty.")
             return None
         last_row = df.iloc[-1]  # Get the last row
-        return last_row["Tone"], last_row["Topic"], last_row["Schedule"], last_row["Edit"]
+        return last_row["Tone"], last_row["Topic"], last_row["Schedule"], last_row["Edit"], last_row["Generated_Post"], df
     except FileNotFoundError:
         print("CSV file not found.")
         return None
@@ -42,8 +42,10 @@ def generate_text(tone, topic, schedule):
 if __name__ == "__main__":
     last_response = get_last_response()
     if last_response:
-        tone, topic, schedule, edit = last_response
+        tone, topic, schedule, edit, post, df = last_response()
         generated_text = generate_text(tone, topic, schedule)
+        df.loc[-1,'Generated_Post']
+        df.to_csv(csv_file, index=False)  # Save updated CSV file with generated post
 
         if generated_text:
             print("\n🔹 AI-Generated Response:\n")
