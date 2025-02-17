@@ -6,7 +6,8 @@ const PreferencesForm = () => {
     tone: "formal",
     topic: "",
     schedule: "daily",
-    edit: "false"
+    edit: "false",
+	userid: "test"
   });
 
   const [message, setMessage] = useState("");
