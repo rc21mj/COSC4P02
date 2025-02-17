@@ -71,7 +71,7 @@ const PreferencesForm = () => {
         </select>
 
         <label style={{ fontWeight: "bold" }}>Review & Edit Post before Posting:</label>
-        <select name="edit" value={formData.tone} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
+        <select name="edit" value={formData.edit} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
           <option value="false">false</option>
           <option value="true">true</option>
         </select>
