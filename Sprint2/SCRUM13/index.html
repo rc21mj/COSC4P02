@@ -74,11 +74,12 @@
     <div class="container">
       <h1>Social Media OAuth & API Actions</h1>
 
-      <!-- LinkedIn Section -->
+      <!-- Social Media Account Login Section -->
       <div class="section">
-        <h2>LinkedIn</h2>
-        <p>Click the button below to log in via LinkedIn. Your access token will be saved for making posts.</p>
-        <a class="button" href="{{ url_for('login') }}">Login with LinkedIn</a>
+        <a class="button" style="background-color: #4285F4; color: white;" href="{{ url_for('login') }}">Login with Google</a>
+        <a class="button" style="background-color: blue; color: white;" href="{{ url_for('login') }}">Login with Twitter</a>
+        <a class="button" style="background-color: darkblue; color: white;" href="{{ url_for('login') }}">Login with LinkedIn</a>
+        <a class="button" style="background-color: #4267B2; color: white;" href="{{ url_for('login') }}">Login with Meta</a>
       </div>
 
       <!-- Generate Post Prompt Section -->
@@ -88,6 +89,8 @@
           <label for="platform-select">Platform:</label>
           <select id="platform-select" name="platform">
             <option value="twitter">Twitter</option>
+            <option value="google">Google</option>
+            <option value="facebook">Facebook</option>
             <option value="linkedin" selected>LinkedIn</option>
           </select>
 
