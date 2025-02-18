@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
 import 'firebase/compat/auth';
@@ -68,4 +67,4 @@ function App() {
   );
 }
 
-export default App;
+export default FirebaseAuthUI;
