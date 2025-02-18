@@ -1,4 +1,6 @@
 import React from 'react';
+import { useState, useEffect } from "react";
+
 import firebase from 'firebase/compat/app';
 import { getAuth, signOut, deleteUser } from "firebase/auth";
 import 'firebase/compat/auth';
@@ -9,9 +11,11 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 function FirebaseAuthUI() {
+	const [user, setUser] = useState(null);
   React.useEffect(() => {
 	firebase.auth().onAuthStateChanged(function(user) {
 	if (user) {
+		setUser(user);
 		console.log("user already signed in:", user.email);
 	} else {
 		console.log("user not signed in");
@@ -71,8 +75,12 @@ function FirebaseAuthUI() {
       <header className="App-header">
 		<div id="firebaseui-auth-container"></div>
 		<div>
+		 {user ? (
+		 <div>
 		<button onClick={handleSignOut}>Sign out</button>
 		<button onClick={handleDeleteAccount}>Delete account</button>
+		</div>
+      ) : null}
 		</div>
       </header>
     </div>
