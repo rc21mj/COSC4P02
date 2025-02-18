@@ -3,6 +3,7 @@ import firebase from 'firebase/compat/app';
 import { getAuth, signOut } from "firebase/auth";
 import 'firebase/compat/auth';
 import * as firebaseui from 'firebaseui';
+import './firebase-ui-auth.css'
 import firebaseConfig from './firebaseConfig';
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
