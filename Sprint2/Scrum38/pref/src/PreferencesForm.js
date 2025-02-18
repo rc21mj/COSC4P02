@@ -1,14 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import firebase from 'firebase/compat/app';
+import firebaseConfig from './firebaseConfig';
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const PreferencesForm = () => {
+
   const [formData, setFormData] = useState({
     tone: "formal",
     topic: "",
     schedule: "daily",
-    edit: "false"
+    edit: "false",
+	userid: "failedSet"
   });
-
+  //set userID
+  React.useEffect(() => {
+	firebase.auth().onAuthStateChanged(function(user) {
+	setFormData(prevData => ({
+	...prevData,
+	userid: user ? user.uid : "guest",
+	}));
+	});
+  },[]);
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
