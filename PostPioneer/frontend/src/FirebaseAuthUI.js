@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from 'firebase/compat/app';
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signOut, deleteUser } from "firebase/auth";
 import 'firebase/compat/auth';
 import * as firebaseui from 'firebaseui';
 import './firebase-ui-auth.css'
@@ -56,12 +56,23 @@ function FirebaseAuthUI() {
 	});
 	window.location = '/login'
   };
+  const handleDeleteAccount = () => {
+	const auth = getAuth();
+	const user = auth.currentUser;
+	deleteUser(user).then(() => {
+		console.log("User deleted.");
+	}).catch((error) => {
+		console.error("Failed to delete current user:", error);
+	});
+	window.location = '/login'
+  };
   return (
     <div className="App">
       <header className="App-header">
 		<div id="firebaseui-auth-container"></div>
 		<div>
 		<button onClick={handleSignOut}>Sign out</button>
+		<button onClick={handleDeleteAccount}>Delete account</button>
 		</div>
       </header>
     </div>
