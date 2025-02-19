@@ -22,8 +22,10 @@ def submit():
     topic = data.get("topic")
     schedule = data.get("schedule")
     edit = data.get("edit")
+    language = data.get("language")
     userid = data.get("userid")
     print(userid)
+    print(language)
     if not (tone and topic and schedule and edit and userid):
         return jsonify({"error": "Missing fields"}), 400
     
@@ -32,6 +34,7 @@ def submit():
         "topic": topic,
         "tone": tone,
         "data": data,
+        "language": language,
         "edit": edit})
     # Save data to CSV
     file_exists = os.path.exists(CSV_FILE)
@@ -46,7 +49,7 @@ def submit():
 
         writer.writerow([tone, topic, schedule, edit, ""])
 
-    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}"}), 200
+    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000)  # Run Flask on port 3000
