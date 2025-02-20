@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credential Storage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      async
+      src="https://pay.google.com/gp/p/js/pay.js"
+      onload="initGooglePay()"
+    ></script>
+    <script src="googlepayJS.js" type="text/javascript"></script>
+  </head>
+  <body class="bg-gray-100 flex">
+    <div class="bg-blue-600 text-white w-64 flex-shrink-0 h-screen">
+      <nav class="flex flex-col space-y-4 p-4">
+        <a href="#" class="block px-3 py-2 rounded-lg hover:bg-blue-500"
+          >Home</a
+        >
+        <a
+          href="SocialMediaLoginPage.html"
+          class="block px-3 py-2 rounded-lg hover:bg-blue-500"
+          >Store Credentials</a
+        >
+        <a
+          href="Pro~Page.html"
+          class="block px-3 py-2 rounded-lg hover:bg-blue-500"
+          >Pro~</a
+        >
+        <a href="#" class="block px-3 py-2 rounded-lg hover:bg-blue-500"
+          >Settings</a
+        >
+      </nav>
+    </div>
+
+    <div
+      class="flex-1 m-3 mt-14 p-4 flex items-start justify-evenly gap-x-8 bg-gray-100"
+    >
+      <div class="bg-gray-500 w-72 p-4 rounded-md flex-none h-[500px]"></div>
+
+      <div
+        class="relative bg-gray-500 w-72 p-4 rounded-md flex justify-center h-[500px]"
+      >
+        <div id="gpay-container" class="absolute bottom-0 mb-4"></div>
+      </div>
+    </div>
+  </body>
+</html>
