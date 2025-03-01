@@ -12,6 +12,7 @@ const PreferencesForm = () => {
     topic: "",
     schedule: "daily",
     edit: "false",
+	language: "english",
 	userid: "failedSet"
   });
   //set userID
@@ -89,6 +90,16 @@ const PreferencesForm = () => {
           <option value="false">false</option>
           <option value="true">true</option>
         </select>
+		<label style={{ fontWeight: "bold" }}>Language</label>
+        <input
+          type="text"
+          name="language"
+          value={formData.language}
+          onChange={handleChange}
+          placeholder="Type your language..."
+          required
+          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        />
 
 
         <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "white", border: "none" }}>
