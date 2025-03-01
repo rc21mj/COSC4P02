@@ -6,6 +6,8 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin import auth
+from ollama import chat
+from ollama import ChatResponse
 
 app = Flask(__name__)
 CORS(app)  # Allow requests from React frontend
@@ -25,15 +27,16 @@ def submit():
     language = data.get("language")
     userid = data.get("userid")
     print(userid)
-    print(language)
-    if not (tone and topic and schedule and edit and userid):
+    if not (tone and topic and schedule and edit and userid and language):
         return jsonify({"error": "Missing fields"}), 400
-    
+    data = generatePostText(tone,topic,language);
     ref = db.reference("Users").child(userid).child("UserPosts")
     postID = ref.push({
         "topic": topic,
         "tone": tone,
-        "data": data,
+        #"data": data,
+        "data": "placeholder", #keep placeholder data for now so as to not fill up the database too fast
+        "schedule": schedule,
         "language": language,
         "edit": edit})
     # Save data to CSV
@@ -48,8 +51,15 @@ def submit():
             writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
 
         writer.writerow([tone, topic, schedule, edit, ""])
-
-    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}"}), 200
-
+    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}, Data={data},"}), 200
+def generatePostText(tone, topic, language):
+    initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}."
+    print("Post Pioneer Deepseek Test")
+    model = "deepseek-r1:1.5b"
+    messages = [{"role": "system", "content": initial_prompt}];
+    response= chat(model=model, messages=messages)
+    messages.append({"role": "assistant", "content": response['message']['content']})
+    print(response['message']['content'])
+    return response['message']['content'].split("</think>",1)[1]
 if __name__ == "__main__":
     app.run(debug=True, port=3000)  # Run Flask on port 3000
