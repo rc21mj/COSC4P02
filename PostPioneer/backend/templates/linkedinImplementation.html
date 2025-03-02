@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Post Pioneer</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      h1, h2, h3 {
+        color: #333;
+      }
+      .section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+      }
+      a.button {
+        display: inline-block;
+        background-color: #0073b1;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 10px;
+      }
+      a.button:hover {
+        background-color: #005f8d;
+      }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+      }
+      input[type="text"], select {
+        width: 100%;
+        padding: 8px;
+        margin: 5px 0 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      input[type="submit"], button {
+        background-color: #0073b1;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      input[type="submit"]:hover, button:hover {
+        background-color: #005f8d;
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Social Media OAuth & API Actions</h1>
+
+      <!-- LinkedIn Section -->
+      <div class="section">
+        <h2>LinkedIn</h2>
+        <p>Click the button below to log in via LinkedIn. Your access token will be saved for making posts.</p>
+        <a class="button" href="{{ url_for('login') }}">Login with LinkedIn</a>
+      </div>
+
+    <textarea id="post-textarea" placeholder="Write your post here..." rows="5" cols="50"></textarea>
+    <button onclick="submitPost()">Post</button>
+    <script>
+
+      function submitPost() {
+        var text = document.getElementById("post-textarea").value;
+        if (!text) {
+          alert("Please enter some text.");
+          return;
+        }
+
+        fetch("/make_post", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            alert("Error: " + data.error);
+          } else {
+            alert("Post successfully created!");
+            document.getElementById("post-textarea").value = ""; // Clear the input
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred while making the post.");
+        });
+      }
+    </script>
+  </body>
+</html>
