@@ -25,6 +25,20 @@ The project is a SaaS web app that enables users to create social media posts by
 | Karan Arora - Developer                           | 6226120        |
 | Charmvir Grewal - Developer                       | 7026057        |
 
+## Instructions To Run
+- Install Ollama
+- Install DeepSeek (currently using 1.5b)
+  - Befoore your first run use the command: `ollama run deepseek-r1:1.5b`
+  - For other versions change the postfix in the commandline (currently 1.5b) and change the model field to that model in Save.py
+- To run the front end, open your command line and navigate to `PostPioneer/frontend`
+  - Have `npm` installed
+  - Run `npm install react-scipts` and `npm install firebaseui`
+  - Run `npm start`
+- To run the back end, open your command line and navigate to `PostPioneer/frontend`
+  - Have `Python` and `pip` installed
+  - Run `pip install firebase-admin`, and `pip install ollama`
+  - Run `py Save.py`
+
 ## License
 
 This project is licensed under the GNU General Public License v3.0 - see [License](./LICENSE) for information.
