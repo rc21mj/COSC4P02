@@ -25,20 +25,25 @@ const PreferencesForm = () => {
 	});
   },[]);
   const [message, setMessage] = useState("");
-
+  const [image, setImage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+	if (isSubmitting) return; // Prevent duplicate requests
+	setIsSubmitting(true);
     try {
       const response = await axios.post("http://localhost:3000/submit", formData);
       setMessage(response.data.message);
+	  setImage(response.data.image);
     } catch (error) {
       setMessage("Error submitting preferences.");
-    }
+    } finally {
+    setIsSubmitting(false);
+	}
   };
   
 
@@ -107,6 +112,12 @@ const PreferencesForm = () => {
         </button>
 
         {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
+		{image && (
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <h3>Generated Image:</h3>
+            <img src={image} alt="Generated" style={{ width: "100%", maxHeight: "400px", borderRadius: "8px" }} />
+          </div>
+        )}
       </form>
     </div>
   );

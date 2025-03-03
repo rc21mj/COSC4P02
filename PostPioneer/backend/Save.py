@@ -8,10 +8,18 @@ from firebase_admin import db
 from firebase_admin import auth
 from ollama import chat
 from ollama import ChatResponse
-
+from diffusers import StableDiffusionPipeline, DDPMScheduler
+import torch
+from torch import autocast
+import base64
+from io import BytesIO
 app = Flask(__name__)
 CORS(app)  # Allow requests from React frontend
-
+print("Loading Stable Diffusion model...")
+MODEL_ID = "CompVis/stable-diffusion-v1-4"
+pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float32)
+pipe.to("cpu")
+print("Model loaded successfully!")
 CSV_FILE = "responses.csv"
 cred = credentials.Certificate("credentials.json")
 firebase_admin.initialize_app(cred, {
@@ -51,7 +59,8 @@ def submit():
             writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
 
         writer.writerow([tone, topic, schedule, edit, ""])
-    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}, Data={data},"}), 200
+    base64_image = generatepostImage(tone,topic)
+    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}, Data={data}", "image": f"data:image/png;base64,{base64_image}"}), 200
 def generatePostText(tone, topic, language):
     initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}."
     print("Post Pioneer Deepseek Test")
@@ -61,5 +70,19 @@ def generatePostText(tone, topic, language):
     messages.append({"role": "assistant", "content": response['message']['content']})
     print(response['message']['content'])
     return response['message']['content'].split("</think>",1)[1]
+def generatepostImage(tone, topic):
+    initial_prompt = f"Write a stable diffusion prompt about {topic}, the image tone must be {tone}. Provide just the prompt!"
+    print("Post Pioneer Stable Diffusion Prompt Generation Test")
+    model = "deepseek-r1:1.5b"
+    messages = [{"role": "system", "content": initial_prompt}];
+    response= chat(model=model, messages=messages)
+    messages.append({"role": "assistant", "content": response['message']['content']})
+    print(response['message']['content'])
+    prompt = response['message']['content'].split("</think>",1)[1]
+    print("Post Pioneer Stable Diffusion Test")
+    image = pipe(prompt, num_inference_steps=5).images[0]
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode("utf-8")
 if __name__ == "__main__":
     app.run(debug=True, port=3000)  # Run Flask on port 3000
