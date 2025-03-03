@@ -59,15 +59,18 @@ function TestMigration() {
         .then(function (response) {
           console.log("isReadyToPay response:", response);
           if (response.result) {
-            const button = paymentsClient.createButton({
-              onClick: onGooglePayButtonClicked,
-              buttonColor: "black",
-              buttonType: "pay",
-              buttonRadius: 17,
-              buttonLocale: "en",
-            });
-
-            document.getElementById("gpay-container").appendChild(button);
+            // Check if the button already exists
+            if (!document.getElementById("gpay-button")) {
+              const button = paymentsClient.createButton({
+                onClick: onGooglePayButtonClicked,
+                buttonColor: "black",
+                buttonType: "pay",
+                buttonRadius: 17,
+                buttonLocale: "en",
+              });
+              button.id = "gpay-button"; // Assign an ID to the button
+              document.getElementById("gpay-container").appendChild(button);
+            }
           } else {
             console.warn("Google Pay is not available on this device/browser.");
           }
@@ -93,9 +96,11 @@ function TestMigration() {
         merchantId: "12345678901234567890",
       };
 
+      console.log("Loading payment data...");
       paymentsClient
         .loadPaymentData(paymentDataRequest)
         .then(function (paymentData) {
+          console.log("Payment data loaded:", paymentData);
           const paymentToken =
             paymentData.paymentMethodData.tokenizationData.token;
           console.log("Received payment token:", paymentToken);
@@ -143,10 +148,7 @@ function TestMigration() {
           >
             Store Credentials
           </a>
-          <a
-            href="Pro~Page.html"
-            className="block px-3 py-2 rounded-lg hover:bg-blue-500"
-          >
+          <a href="" className="block px-3 py-2 rounded-lg hover:bg-blue-500">
             Pro~
           </a>
           <a href="#" className="block px-3 py-2 rounded-lg hover:bg-blue-500">

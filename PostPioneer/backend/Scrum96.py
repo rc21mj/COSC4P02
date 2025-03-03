@@ -57,6 +57,7 @@ def callBack_page():
 
     cred = credentials.Certificate("/Users/karanarora/Desktop/Brock COSC Courses/4P02/Scrum96/postpioneer-e82d3-firebase-adminsdk-fbsvc-98eebf34ad.json")
 
+    
 
     ref = db.reference("Users").child("userid").child("UserTokens")
     ref.push({
@@ -68,10 +69,12 @@ def callBack_page():
 
 @app.route('/2/tweets', methods=["GET", 'POST'])
 def get_tweet():
+
     if request.method == "POST":
         tweet = request.form['tweet']
         
         
+
         oauth = OAuth1Session(
             client_key=CONSUMER_KEY,
             client_secret=CONSUMER_SECRET,
@@ -85,9 +88,9 @@ def get_tweet():
         )
         
         if response.status_code == 201:
-            return "Tweet successfully posted!"
+            return "Successfuly Tweeted"
         else:
-            return f"Failed to post tweet: {response.text}"
+            return f"Post failed: {response.text}"
     
     return '''
         <form method="post">
