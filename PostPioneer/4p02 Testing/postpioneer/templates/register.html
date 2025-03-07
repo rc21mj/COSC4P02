@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - PostPioneer</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PostPioneer</h1>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('how_it_works') }}">How it Works</a></li>
+                    <li><a href="{{ url_for('sample_posts') }}">Sample Posts</a></li>
+                    <li><a href="{{ url_for('user_login') }}">User Login</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <h2>Register</h2>
+            <form action="{{ url_for('register') }}" method="post">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <div class="button-container">
+                    <button type="submit" class="banner-button">Register</button>
+                </div>
+            </form>
+        </main>
+        <footer>
+            <p>&copy; 2025 PostPioneer. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Posts - PostPioneer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Sample Posts</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('how_it_works') }}">How it Works</a></li>
+                <li><a href="{{ url_for('sample_posts') }}">Sample Posts</a></li>
+                <li><a href="{{ url_for('user_login') }}">User Login</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="sample-posts">
+            <h2>Check Out Some Sample Posts</h2>
+            <p>Here are some examples of the amazing content you can create with PostPioneer:</p>
+            <ul>
+                <li>Sample Post 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                <li>Sample Post 2: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</li>
+                <li>Sample Post 3: Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+            </ul>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 PostPioneer. All rights reserved.</p>
+    </footer>
+    
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
