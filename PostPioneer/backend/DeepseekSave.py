@@ -47,6 +47,8 @@ def submit():
         "schedule": schedule,
         "language": language,
         "edit": edit})
+    postID =  postID.key
+    
     # Save data to CSV
     file_exists = os.path.exists(CSV_FILE)
 
@@ -60,7 +62,8 @@ def submit():
 
         writer.writerow([tone, topic, schedule, edit, ""])
     base64_image = generatepostImage(tone,topic)
-    return jsonify({"message": f"Saved: Tone={tone}, Topic={topic}, Schedule={schedule}, Edit={edit}, Language={language}, Data={data}", "image": f"data:image/png;base64,{base64_image}"}), 200
+    return jsonify(
+        {"message": f"Data={data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
 def generatePostText(tone, topic, language):
     initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}."
     print("Post Pioneer Deepseek Test")
