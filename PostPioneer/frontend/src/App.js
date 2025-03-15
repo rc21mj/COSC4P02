@@ -5,20 +5,20 @@ import FirebaseAuthUI from "./FirebaseAuthUI";
 import SupportForm from "./SupportForm";
 import TestMigration from "./TestMigration";
 import TwitterPosting from "./Posting";
-import Settings from "./Settings";
-
+import Home from "./Home";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<FirebaseAuthUI />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/login" element={<FirebaseAuthUI />} />
-        <Route path="/dashboard" element={<PreferencesForm />} />
+        <Route path="/post_generation" element={<PreferencesForm />} />
         <Route path="/support" element={<SupportForm />} />
-        <Route path="/test" element={<TestMigration />} />
-		<Route path="/settings" element={<Settings />} />
-        {<Route path="/posting" element={<TwitterPosting />} />}
+        <Route path="/payment" element={<TestMigration />} />
+        <Route path="/posting" element={<TwitterPosting />} />
+        
       </Routes>
     </Router>
   );
