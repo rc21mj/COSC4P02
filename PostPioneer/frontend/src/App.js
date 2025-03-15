@@ -4,7 +4,7 @@ import PreferencesForm from "./PreferencesForm";
 import FirebaseAuthUI from "./FirebaseAuthUI";
 import SupportForm from "./SupportForm";
 import TestMigration from "./TestMigration";
-import Posting from "./TwitterPosting";
+import TwitterPosting from "./Posting";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         <Route path="/dashboard" element={<PreferencesForm />} />
         <Route path="/support" element={<SupportForm />} />
         <Route path="/test" element={<TestMigration />} />
-        <Route path="/posting" element={<Posting />} />
+        {<Route path="/posting" element={<TwitterPosting />} />}
       </Routes>
     </Router>
   );
