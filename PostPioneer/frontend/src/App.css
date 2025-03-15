@@ -1,209 +1,240 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+.App {
+  text-align: center;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
 
 header {
-    background-color: #0073b1;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    width: 100%;
+  background-color: #0073b1;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  width: 100%;
 }
 
 nav ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 nav ul li {
-    display: inline;
-    margin-right: 10px;
+  display: inline;
+  margin-right: 10px;
 }
 
 nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 main {
-    text-align: center;
-    padding: 20px;
+  text-align: center;
+  padding: 20px;
 }
 
 .introduction, .registration, .sample-posts {
-    max-width: 800px;
-    margin: 20px auto;
+  max-width: 800px;
+  margin: 20px auto;
 }
 
 .introduction h2, .registration h3, .sample-posts h2 {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .introduction p, .registration p, .sample-posts p {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .registration form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .registration input {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 100%;
-    max-width: 300px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 300px;
 }
 
 .registration button {
-    padding: 10px;
-    background-color: #0073b1;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  padding: 10px;
+  background-color: #0073b1;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .registration button:hover {
-    background-color: #005582;
+  background-color: #005582;
 }
 
 footer {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #0073b1;
-    color: white;
-    width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #0073b1;
+  color: white;
+  width: 100%;
 }
 
 .recent-posts, .stats {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .recent-posts ul {
-    list-style-type: none;
-    padding: 0;
+  list-style-type: none;
+  padding: 0;
 }
 
 .recent-posts li {
-    background-color: #f9f9f9;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 4px;
 }
 
 form {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .status {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .status p {
-    margin: 0;
-    margin-right: 10px;
+  margin: 0;
+  margin-right: 10px;
 }
 
 .status .checkmark {
-    color: green;
-    font-weight: bold;
+  color: green;
+  font-weight: bold;
 }
 
 button {
-    background-color: transparent;
-    color: #007bff;
-    border: 2px solid #007bff;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-block;
-    margin: 5px 0;
+  background-color: transparent;
+  color: #007bff;
+  border: 2px solid #007bff;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  margin: 5px 0;
 }
 
 button:hover {
-    background-color: #007bff;
-    color: white;
+  background-color: #007bff;
+  color: white;
 }
 
 label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
 select, textarea, button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 textarea {
-    resize: vertical;
+  resize: vertical;
 }
 
 .button-container {
-    text-align: center;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 button.banner-button {
-    width: auto;
-    padding: 10px 20px;
-    background-color: #0073b1;
-    color: white;
-    border: none;
-    border-radius: 4px;
+  width: auto;
+  padding: 10px 20px;
+  background-color: #0073b1;
+  color: white;
+  border: none;
+  border-radius: 4px;
 }
 
 button.banner-button:hover {
-    background-color: #005582;
+  background-color: #005582;
 }
 
 .register-link {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .register-link a {
-    color: #0073b1;
-    text-decoration: none;
+  color: #0073b1;
+  text-decoration: none;
 }
 
 .register-link a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .small-dropdown {
-    width: 50%;
-    margin: 0 auto 20px auto;
+  width: 50%;
+  margin: 0 auto 20px auto;
 }
 
 .generated-textbox {
-    width: 75%;
-    height: 300px; /* Increased height */
-    margin: 0 auto 20px auto;
+  width: 75%;
+  height: 300px; /* Increased height */
+  margin: 0 auto 20px auto;
 }

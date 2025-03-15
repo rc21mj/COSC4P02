@@ -25,6 +25,61 @@ dialog + .backdrop {
   top: 0; right: 0; bottom: 0; left: 0;
   background: rgba(0,0,0,0.1);
 }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.firebaseui-container {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.firebaseui-card-content {
+  padding: 0 24px;
+}
+
+.firebaseui-card-actions {
+  padding: 8px 24px 24px 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.firebaseui-card-actions button {
+  margin-left: 8px;
+}
+
+
+#firebaseui-auth-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
 
 /* for small devices, modal dialogs go full-screen */
 @media screen and (max-width: 540px) {

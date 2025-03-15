@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Home = () => {
   return (
@@ -7,9 +7,15 @@ const Home = () => {
         <h1>Welcome to My Website</h1>
         <nav>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/about">About</a>
+            </li>
+            <li>
+              <a href="/contact">Contact</a>
+            </li>
           </ul>
         </nav>
       </header>
@@ -17,9 +23,7 @@ const Home = () => {
       <main>
         <section>
           <h2>Post Pioneer</h2>
-          <p>
-            Post Pioneer home page - containing sample posts, about page. 
-          </p>
+          <p>Post Pioneer home page - containing sample posts, about page.</p>
         </section>
       </main>
 
@@ -28,5 +32,5 @@ const Home = () => {
       </footer>
     </div>
   );
-}
+};
 export default Home;
