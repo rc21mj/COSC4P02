@@ -41,7 +41,7 @@ const PreferencesForm = () => {
       setImage(response.data.image);
       // Redirect to the edit page with postID as query parameter
       const postID = response.data.postID; // Assuming you return postID from backend
-      history.push(/edit-post/${postID});
+      //history.push(/edit-post/${postID});
     } catch (error) {
       setMessage("Error submitting preferences.");
     } finally {
