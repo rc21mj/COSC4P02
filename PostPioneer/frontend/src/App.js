@@ -6,6 +6,7 @@ import SupportForm from "./SupportForm";
 import TestMigration from "./TestMigration";
 import TwitterPosting from "./Posting";
 import Home from "./Home";
+import EditPosting from "./EditPosting";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/support" element={<SupportForm />} />
         <Route path="/payment" element={<TestMigration />} />
         <Route path="/posting" element={<TwitterPosting />} />
+        <Route path="/editing" element={<EditPosting />} />
         
       </Routes>
     </Router>
