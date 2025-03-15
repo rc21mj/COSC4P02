@@ -80,6 +80,7 @@ function FirebaseAuthUI() {
   return (
     <main>
       <h2>User Login</h2>
+
       <div id="firebaseui-auth-container"></div>
     </main>
   );
