@@ -38,7 +38,10 @@ const PreferencesForm = () => {
     try {
       const response = await axios.post("http://localhost:3000/submit", formData);
       setMessage(response.data.message);
-	  setImage(response.data.image);
+      setImage(response.data.image);
+      // Redirect to the edit page with postID as query parameter
+      const postID = response.data.postID; // Assuming you return postID from backend
+      history.push(/edit-post/${postID});
     } catch (error) {
       setMessage("Error submitting preferences.");
     } finally {
