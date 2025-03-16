@@ -7,6 +7,7 @@ import TestMigration from "./TestMigration";
 import TwitterPosting from "./Posting";
 import Home from "./Home";
 import EditPosting from "./EditPosting";
+import Settings from "./Settings";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
         <Route path="/payment" element={<TestMigration />} />
         <Route path="/posting" element={<TwitterPosting />} />
         <Route path="/editing" element={<EditPosting />} />
-        
+        <Route path="/settings" element={<Settings />} />
       </Routes>
     </Router>
   );

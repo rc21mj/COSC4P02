@@ -31,6 +31,18 @@ function Settings() {
 	});
 	window.location = '/login'
   };
+  const handleAddLinkedIn = (userId) => {
+	window.location.href = `http://localhost:5000/linkedin_login?user_id=${user.uid}`;
+  };
+  const handleRemoveLinkedIn = () => {
+	window.location.href = `http://localhost:5000/remove_linkedin?user_id=${user.uid}`;
+  };
+  const handleAddTwitter = (userID) => {
+	window.location.href = `http://localhost:5000//twitter_login?user_id=${user.uid}`
+  };
+  const handleRemoveTwitter = () => {
+	window.location.href = `http://localhost:5000/remove_twitter?user_id=${user.uid}`;
+  };
   const handleDeleteAccount = () => {
 	const auth = getAuth();
 	const user = auth.currentUser;
@@ -40,14 +52,19 @@ function Settings() {
 		console.error("Failed to delete current user:", error);
 	});
 	window.location = '/login'
-  };	
+  };		
 	return (
     <div className="App">
 	<h1>Settings</h1>
 		<div>
+			
 		{user ? (
 		 <div>
 		 <ul>
+		 	<li><button onClick={handleAddLinkedIn}>Add LinkedIn</button></li>
+		 	<li><button onClick={handleRemoveLinkedIn}>Remove LinkedIn</button></li>
+		 	<li><button onClick={handleAddTwitter}>Add Twitter</button></li>
+			 <li><button onClick={handleRemoveTwitter}>Remove Twitter</button></li>
 			<li><button onClick={handleSignOut}>Sign out</button></li>
 			<li><button onClick={handleDeleteAccount}>Delete account</button></li>
 		</ul>
