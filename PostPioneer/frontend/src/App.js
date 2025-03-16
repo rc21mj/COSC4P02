@@ -8,6 +8,7 @@ import TwitterPosting from "./Posting";
 import Home from "./Home";
 import EditPosting from "./EditPosting";
 import Settings from "./Settings";
+import './App.css'
 
 function App() {
   return (
