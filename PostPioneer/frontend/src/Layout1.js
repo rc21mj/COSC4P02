@@ -26,6 +26,18 @@ function Layout1({ children }) {
     });
   }, []);
 
+  const handleSignOut = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out.");
+      })
+      .catch((error) => {
+        console.error("Sign out error:", error);
+      });
+    window.location = "/login";
+  };
+
   return (
     <>
       <header>
@@ -44,10 +56,29 @@ function Layout1({ children }) {
             <li>
               <Link to="/support">Support Page</Link>
             </li>
-            <li>
-              <Link to="/post_generation">Sample Posts</Link>
-            </li>
-            {user ? null : (
+            {user ? (
+              <li>
+                <Link to="/post_generation">Generate a Post!</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li>
+                <Link to="/payment">Payment Plan</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li class="signOutButton">
+                <Link
+                  to="/home"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSignOut();
+                  }}
+                >
+                  Sign out
+                </Link>
+              </li>
+            ) : (
               <li>
                 <Link to="/login">User Login</Link>
               </li>

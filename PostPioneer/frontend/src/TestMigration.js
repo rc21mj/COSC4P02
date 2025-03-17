@@ -105,7 +105,7 @@ function TestMigration() {
             paymentData.paymentMethodData.tokenizationData.token;
           console.log("Received payment token:", paymentToken);
 
-          fetch("http://127.0.0.1:5000/process-payment", {
+          fetch("https://127.0.0.1:5000/process-payment", {
             mode: "cors",
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -137,7 +137,7 @@ function TestMigration() {
 
   return (
     <div className="bg-gray-100 flex">
-      <div className="bg-blue-600 text-white w-64 flex-shrink-0 h-screen">
+      {/* <div className="bg-blue-600 text-white w-64 flex-shrink-0 h-screen">
         <nav className="flex flex-col space-y-4 p-4">
           <a href="#" className="block px-3 py-2 rounded-lg hover:bg-blue-500">
             Home
@@ -155,7 +155,7 @@ function TestMigration() {
             Settings
           </a>
         </nav>
-      </div>
+      </div> */}
 
       <div className="flex-1 m-3 mt-14 p-4 flex items-start justify-evenly gap-x-8 bg-gray-100">
         <div className="bg-gray-500 w-72 p-4 rounded-md flex-none h-[500px]">
