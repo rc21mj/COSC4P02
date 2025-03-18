@@ -17,7 +17,7 @@ function FirebaseAuthUI() {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         setUser(user);
-        console.log("user already signed in:", user.email);
+        console.log("user already signed in:", user.email, user);
       } else {
         console.log("user not signed in");
       }

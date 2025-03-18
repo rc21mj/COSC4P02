@@ -1,18 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import firebaseConfig from "./firebaseConfig";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, update } from "firebase/database";
+import { getDatabase, ref, update, get } from "firebase/database";
 
 const db = getDatabase();
 
 function TestMigration() {
+  const [userId, setUserId] = useState(null); // Track user ID
+  const [userPlan, setUserPlan] = useState(null); // Track user's plan
+
   useEffect(() => {
     const auth = getAuth();
-    let userId;
-
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        userId = user.uid;
+        setUserId(user.uid); // Save the userId to state
+        // Assuming your user data is under "Users/{user.uid}"
+        const userRef = ref(db, `Users/${user.uid}`);
+        get(userRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              setUserPlan(data.userType || "Basic"); // Set plan from database
+            } else {
+              setUserPlan("Basic");
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user plan:", error);
+          });
       } else {
         console.error("User is not authenticated");
         return;
@@ -135,6 +150,7 @@ function TestMigration() {
               if (data.status == "success") {
                 alert("Payment successful! Thank you for your purchase.");
                 update(ref(db, "Users/" + userId), { userType: "Pro" });
+                setUserPlan("Pro"); // Update the state to trigger a re-render
               } else {
                 alert("Payment failed. Please try again.");
               }
@@ -162,28 +178,19 @@ function TestMigration() {
     }
   }, []);
 
+  function cancel() {
+    if (userId) {
+      update(ref(db, "Users/" + userId), { userType: "Basic" });
+      setUserPlan("Basic");
+    }
+  }
+
+  function getUserPlan() {
+    return userPlan;
+  }
+
   return (
     <div className="bg-gray-100 flex">
-      {/* <div className="bg-blue-600 text-white w-64 flex-shrink-0 h-screen">
-        <nav className="flex flex-col space-y-4 p-4">
-          <a href="#" className="block px-3 py-2 rounded-lg hover:bg-blue-500">
-            Home
-          </a>
-          <a
-            href="SocialMediaLoginPage.html"
-            className="block px-3 py-2 rounded-lg hover:bg-blue-500"
-          >
-            Store Credentials
-          </a>
-          <a href="" className="block px-3 py-2 rounded-lg hover:bg-blue-500">
-            Pro~
-          </a>
-          <a href="#" className="block px-3 py-2 rounded-lg hover:bg-blue-500">
-            Settings
-          </a>
-        </nav>
-      </div> */}
-
       <div className="flex-1 m-3 mt-14 p-4 flex items-start justify-evenly gap-x-8 bg-gray-100">
         <div className="bg-gray-500 w-72 p-4 rounded-md flex-none h-[500px]">
           <h1 className="text-2xl font-bold">Basic</h1>
@@ -201,13 +208,23 @@ function TestMigration() {
             <li>✔ Dashboard Management for tracking and customization</li>
           </ul>
           <div>
-            <button
-              type="button"
-              disabled
-              className="w-full h-12 bg-gray-300 text-gray-700 rounded-md mt-4"
-            >
-              Your Current Plan
-            </button>
+            {getUserPlan() === "Pro" ? (
+              <button
+                type="button"
+                className="w-full h-12 bg-red-500 text-white rounded-md mt-4"
+                onClick={cancel}
+              >
+                Cancel Your Plan
+              </button>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="w-full h-12 bg-gray-300 text-gray-700 rounded-md mt-4"
+              >
+                Your Current Plan
+              </button>
+            )}
           </div>
         </div>
 
@@ -224,7 +241,22 @@ function TestMigration() {
             <li>✔ Enhanced AI for deeper content personalization</li>
             <li>✔ Photo and Video Generation for different platforms</li>
           </ul>
-          <div id="gpay-container" className="absolute bottom-0 mb-4"></div>
+          <div className="relative">
+            {getUserPlan() === "Pro" ? (
+              <button
+                type="button"
+                disabled
+                className="absolute w-full h-12 bg-gray-300 text-gray-700 rounded-md mt-4 translate-y-10"
+              >
+                Your Current Plan
+              </button>
+            ) : (
+              <div
+                id="gpay-container"
+                className="absolute bottom-0 mb-4 translate-y-32 translate-x-2"
+              ></div>
+            )}
+          </div>
         </div>
       </div>
     </div>
