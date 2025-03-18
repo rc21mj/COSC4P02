@@ -36,7 +36,7 @@ const PreferencesForm = () => {
 	if (isSubmitting) return; // Prevent duplicate requests
 	setIsSubmitting(true);
     try {
-      const response = await axios.post("http://localhost:3000/submit", formData);
+      const response = await axios.post("http://localhost:5000/submit", formData);
       setMessage(response.data.message);
       setImage(response.data.image);
       // Redirect to the edit page with postID as query parameter

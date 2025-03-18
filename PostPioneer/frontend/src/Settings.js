@@ -55,7 +55,6 @@ function Settings() {
   };		
 	return (
     <div className="App">
-	<h1>Settings</h1>
 		<div>
 			
 		{user ? (

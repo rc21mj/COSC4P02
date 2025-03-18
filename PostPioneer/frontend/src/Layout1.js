@@ -67,6 +67,11 @@ function Layout1({ children }) {
               </li>
             ) : null}
             {user ? (
+              <li>
+                <Link to="/settings">Settings</Link>
+              </li>
+            ) : null}
+            {user ? (
               <li class="signOutButton">
                 <Link
                   to="/home"
