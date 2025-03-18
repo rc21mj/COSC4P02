@@ -23,7 +23,7 @@ function App() {
           <Route path="/support" element={<SupportForm />} />
           <Route path="/payment" element={<TestMigration />} />
           <Route path="/posting" element={<TwitterPosting />} />
-          <Route path="/editing" element={<EditPosting />} />
+          <Route path="/editPosting" element={<EditPosting />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </Layout1>
