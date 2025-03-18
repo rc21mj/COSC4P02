@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/compat/app";
-import { getAuth, signOut, deleteUser } from "firebase/auth";
+import { getAuth, deleteUser } from "firebase/auth";
 import "firebase/compat/auth";
 import * as firebaseui from "firebaseui";
 import "./firebase-ui-auth.css";
@@ -51,18 +51,6 @@ function FirebaseAuthUI() {
       ui.reset();
     };
   }, []);
-
-  const handleSignOut = () => {
-    const auth = getAuth();
-    signOut(auth)
-      .then(() => {
-        console.log("User signed out.");
-      })
-      .catch((error) => {
-        console.error("Sign out error:", error);
-      });
-    window.location = "/login";
-  };
 
   const handleDeleteAccount = () => {
     const auth = getAuth();

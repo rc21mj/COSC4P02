@@ -5,7 +5,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-stripe.api_key = "sk_test_51QuVJuQPFKNWMbqFxaSanAZwst6cJ0mansT0PiYwkQWgfXGcW4IfNI5hXt97YzGNTiyiXxZYBFiEOdhuZhGxFAb700uFIM2BaW"  # Replace with your actual Stripe secret key.
+stripe.api_key = "sk_test_51QuKO2KsmLUG0fTBiVvflwSJ94bwiEHx8sTnXyCHKhFNA6JKIKmLX0y9fKVohnPlmrUP86osPlZRgsubXyMMjXlY00Op5RpSJ8"  # Replace with your actual Stripe secret key.
 
 @app.route("/process-payment", methods=["POST"])
 def process_payment():
@@ -32,4 +32,5 @@ def process_payment():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
+    # Run without SSL for local development
     app.run(debug=True)

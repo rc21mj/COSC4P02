@@ -1,7 +1,24 @@
 import React, { useEffect } from "react";
+import firebaseConfig from "./firebaseConfig";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, update } from "firebase/database";
+
+const db = getDatabase();
 
 function TestMigration() {
   useEffect(() => {
+    const auth = getAuth();
+    let userId;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userId = user.uid;
+      } else {
+        console.error("User is not authenticated");
+        return;
+      }
+    });
+
     let paymentsClient;
 
     const baseRequest = {
@@ -14,7 +31,7 @@ function TestMigration() {
         gateway: "stripe",
         "stripe:version": "2018-10-31",
         "stripe:publishableKey":
-          "pk_test_51QuVJuQPFKNWMbqF0imvL31RnlWQnfELMUktwAuVFqM4JpxOSgZMDSNAGZel0sIEHUXnlFngp1Mwn6QWeqVPgjhb00b3epl9uv",
+          "pk_test_51QuKO2KsmLUG0fTBabd0NeLEOWXbIVpubKHBjvVsUGCfeWKXYy4TebUuQ069psydvIEY36yWgvbTivjH6ywAwqbV00yAeWgNPA",
       },
     };
 
@@ -105,7 +122,8 @@ function TestMigration() {
             paymentData.paymentMethodData.tokenizationData.token;
           console.log("Received payment token:", paymentToken);
 
-          fetch("https://127.0.0.1:5000/process-payment", {
+          fetch("http://127.0.0.1:5000/process-payment", {
+            // Changed to HTTP
             mode: "cors",
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -113,10 +131,19 @@ function TestMigration() {
           })
             .then((response) => response.json())
             .then((data) => {
-              console.log("Server response:", data);
+              console.log(data.status);
+              if (data.status == "success") {
+                alert("Payment successful! Thank you for your purchase.");
+                update(ref(db, "Users/" + userId), { userType: "Pro" });
+              } else {
+                alert("Payment failed. Please try again.");
+              }
             })
             .catch((error) => {
               console.error("Error sending token to backend:", error);
+              alert(
+                "An error occurred while processing the payment. Please try again."
+              );
             });
         })
         .catch(function (err) {
