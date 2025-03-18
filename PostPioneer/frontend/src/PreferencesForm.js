@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import firebase from 'firebase/compat/app';
 import firebaseConfig from './firebaseConfig';
+import {useNavigate } from "react-router-dom";
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -12,9 +13,10 @@ const PreferencesForm = () => {
     topic: "",
     schedule: "daily",
     edit: "false",
-	language: "english",
-	userid: "failedSet"
+	  language: "english",
+	  userid: "failedSet"
   });
+  const navigate = useNavigate();
   //set userID
   React.useEffect(() => {
 	firebase.auth().onAuthStateChanged(function(user) {
@@ -36,12 +38,14 @@ const PreferencesForm = () => {
 	if (isSubmitting) return; // Prevent duplicate requests
 	setIsSubmitting(true);
     try {
-      const response = await axios.post("http://localhost:5000/submit", formData);
-      setMessage(response.data.message);
-      setImage(response.data.image);
-      // Redirect to the edit page with postID as query parameter
-      const postID = response.data.postID; // Assuming you return postID from backend
-      //history.push(/edit-post/${postID});
+      const response = await axios.post("http://localhost:3000/submit", formData);
+      //setMessage(response.data.message);
+	    //setImage(response.data.image);
+      const generatedText = response.data.message;
+      const generatedImage = response.data.image;
+
+      // Navigate to EditPost with generated data
+      navigate("/editPosting", { state: { text: generatedText, image: generatedImage } });
     } catch (error) {
       setMessage("Error submitting preferences.");
     } finally {
@@ -49,7 +53,7 @@ const PreferencesForm = () => {
 	}
   };
   
-
+/** */
   return (
     <div style={{ fontFamily: "Courier, monospace", backgroundColor: "#ebf1f2", padding: "20px" }}>
       <h1 style={{ textAlign: "center", color: "#333" }}>Choose Your Preferences</h1>
