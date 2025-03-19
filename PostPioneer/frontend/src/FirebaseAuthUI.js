@@ -66,11 +66,20 @@ function FirebaseAuthUI() {
   };
 
   return (
-    <main>
-      <h2>User Login</h2>
+    <>
+      <main>
+        <h2>User Login</h2>
 
-      <div id="firebaseui-auth-container"></div>
-    </main>
+        <div id="firebaseui-auth-container"></div>
+      </main>
+
+      <p className="mt-4 text-sm text-gray-600 text-center -translate-y-10)">
+        Need to create an account?{" "}
+        <a href="/register" className="text-[#0073b1] hover:underline ml-1">
+          Sign Up
+        </a>
+      </p>
+    </>
   );
 }
 
