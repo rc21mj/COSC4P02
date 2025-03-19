@@ -6,10 +6,10 @@ from firebase_admin import credentials, db, auth
 
 app = Flask(__name__)
 app.secret_key = '2Qo10WC9WZQmFxvOAHxuJtkkS7NbYVWGQlb0qtO2oPcBFyCZ0y'
-CONSUMER_KEY = 'mro9ar4cp1p6HdQKTxcDwVlxI'
-CONSUMER_SECRET = 'd0foSxJ7ozzWJtS4BqZIeQ4ttZGJx4lYxrHtq2S5Q3qM5NjoF3'
-CLIENT_ID = 'VXYwMmU2S2ZET0xxZzdEUVVVbWk6MTpjaQ'
-CLIENT_SECRET = 'FOeOYwSPu7yjWiHg0aM276UAbuC2AfmQ6wHyfzjEohPIQFGFb5'
+CONSUMER_KEY = 'ET8W5hD8X3su5r9y8r2cTG6cG'
+CONSUMER_SECRET = 'nCDzIVFuRCn6uh4JemuOfk9pjORr5xGJFBGmAVNaC3J2qAqtcT'
+CLIENT_ID = 'd3ZnYmp2bWtqRVRxekxOVVZzRlY6MTpjaQ'
+CLIENT_SECRET = 'C1J_0B3Nb0u79QwKJQwwr7G3anpUok5Pn020rFBC8ChnA3d1fn'
 REDIRECT_URI = 'http://localhost:5000/oauth/callback'
 MAIN_PAGE_URL = 'http://localhost:5000'
 URL = 'https://api.x.com/'
