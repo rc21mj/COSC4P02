@@ -43,7 +43,7 @@ const EditPost = () => {
                 generated_post: formData.text
             });
             if (response.status === 200) {
-                navigate('/dashboard'); // Redirect to dashboard after successful post
+                navigate('/post_generation'); // Redirect to dashboard after successful post
             } else {
                 setMessage("Error submitting post.");
             }
@@ -56,18 +56,19 @@ const EditPost = () => {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h1>Edit Your Post</h1>
+            <h1 className="translate-x-[850px]" >Edit Your Post</h1>
             <form onSubmit={handleSubmit}>
-                <textarea
+                <textarea 
+                    className="translate-x-80"
                     name="text"
                     value={formData.text}
                     onChange={handleChange}
-                    style={{ width: "100%", height: "200px", padding: "10px" }}
+                    style={{ width: "60%", height: "200px", padding: "10px" }}
                 />
                 {image && (
                     <div style={{ textAlign: "center", marginTop: "20px" }}>
                         <h3>Generated Image:</h3>
-                        <img src={image} alt="Generated" style={{ width: "100%", maxHeight: "400px" }} />
+                        <img className="translate-x-[660px]" src={image} alt="Generated" style={{ maxWidth: "512px", maxHeight: "512px" }} />
                     </div>
                 )}
                 <button 
