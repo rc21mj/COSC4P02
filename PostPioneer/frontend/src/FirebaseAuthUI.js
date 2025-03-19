@@ -43,7 +43,7 @@ function FirebaseAuthUI() {
       callbacks: {
         signInSuccessWithAuthResult: (authResult, redirectUrl) => {
           console.log("Signed in with result: ", authResult);
-          window.location.href = "/dashboard";
+          window.location.href = "/Home";
         },
       },
     });

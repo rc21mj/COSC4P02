@@ -11,7 +11,8 @@ import "./App.css";
 import EditPosting from "./EditPosting";
 import Settings from "./Settings";
 import About from "./About";
-import HowitWorks from './HowitWorks';
+import HowitWorks from "./HowitWorks";
+import Register from "./Register";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<FirebaseAuthUI />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
           <Route path="/post_generation" element={<PreferencesForm />} />
           <Route path="/how-it-works" element={<HowitWorks />} />
