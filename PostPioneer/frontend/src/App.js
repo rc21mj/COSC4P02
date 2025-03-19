@@ -10,6 +10,8 @@ import Layout1 from "./Layout1"; // Import the Layout1 component
 import "./App.css";
 import EditPosting from "./EditPosting";
 import Settings from "./Settings";
+import About from "./About";
+import HowitWorks from './HowitWorks';
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<FirebaseAuthUI />} />
+          <Route path="/about" element={<About />} />
           <Route path="/post_generation" element={<PreferencesForm />} />
+          <Route path="/how-it-works" element={<HowitWorks />} />
           <Route path="/support" element={<SupportForm />} />
           <Route path="/payment" element={<TestMigration />} />
           <Route path="/posting" element={<TwitterPosting />} />

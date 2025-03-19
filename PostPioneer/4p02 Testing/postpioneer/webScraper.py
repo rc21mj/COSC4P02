@@ -7,7 +7,7 @@ def scrape_data(topic):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
     }
 
-    if topic == 'recent_sports':
+    if topic == 'sports':
         url = 'https://www.bbc.com/sport'
 
         # Send the HTTP request
@@ -30,7 +30,7 @@ def scrape_data(topic):
 
         return formatted_news.strip()
 
-    elif topic == 'recent_news':
+    elif topic == 'news':
         url = 'https://www.bbc.com/news'
 
         # Send the HTTP request
@@ -62,13 +62,10 @@ def scrape_data(topic):
         return formatted_news.strip()
 
     else:
-        return "Topic not recognized. Please use 'recent_sports' or 'recent_news'."
+        return None
 
 def generate_post_from_llm(prompt):
     # Placeholder function to generate a post from the LLM
     # Replace this with actual LLM API call
     return f"Generated post based on the prompt: {prompt}"
 
-
-print(scrape_data('recent_news'))
-#print(scrape_data('recent_sports'))

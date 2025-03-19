@@ -36,7 +36,7 @@ The project is a SaaS web app that enables users to create social media posts by
   - For other versions change the postfix in the commandline (currently 1.5b) and change the model field to that model in Save.py
 - To run the front end, open your command line and navigate to `PostPioneer/frontend`
   - Have `npm` installed
-  - Run `npm install react-scipts` and `npm install firebaseui`
+  - Run `npm install react-scripts` and `npm install firebaseui`
   - Run `npm start`
 - To run the back end, open your command line and navigate to `PostPioneer/frontend`
   - Have `Python` and `pip` installed

@@ -2,10 +2,11 @@ import os
 import random
 import string
 import hashlib
+import stripe
 import base64
 import requests
 import csv
-from flask import Flask, redirect, request, session, url_for, render_template, jsonify, flash
+from flask import Flask, redirect, request, session, url_for, render_template, jsonify, flash, json
 from flask_cors import CORS
 from flask_apscheduler import APScheduler
 from dotenv import load_dotenv
@@ -25,9 +26,12 @@ from torch import autocast
 from io import BytesIO
 print("Loading Stable Diffusion model...")
 MODEL_ID = "CompVis/stable-diffusion-v1-4"
-CURRENT_MODEL = "deepseek-r1:1.5b"
-pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float32)
-pipe.to("cpu")
+CURRENT_MODEL = "deepseek-r1:14b"
+pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
+pipe.to("cuda")
+#pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float32)
+#pipe.to("cpu")
+
 print("Model loaded successfully!")
 CSV_FILE = "responses.csv"
 app = Flask(__name__)
@@ -38,7 +42,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("credentials.json")
+cred = credentials.Certificate("PostPioneer\\4p02 Testing\postpioneer\credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -75,43 +79,43 @@ def how_it_works():
 def sample_posts():
     return render_template('sample_posts.html')
 
-@app.route('/user_login', methods=['GET', 'POST'])
-def user_login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # Verify the user's credentials
-        with open('users.csv', mode='r', newline='') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                if row[0] == username and row[1] == password:
-                    session['username'] = username
-                    session['linkedin_token'] = row[2] if len(row) > 2 else None
-                    session['twitter_token'] = row[3] if len(row) > 3 else None
-                    session['twitter_token_secret'] = row[4] if len(row) > 4 else None
-                    return redirect(url_for('settings'))
-            flash('Invalid username or password. Please try again.')
-            return redirect(url_for('user_login'))
-    return render_template('user_login.html')
+# @app.route('/user_login', methods=['GET', 'POST'])
+# def user_login():
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+#         # Verify the user's credentials
+#         with open('users.csv', mode='r', newline='') as file:
+#             reader = csv.reader(file)
+#             for row in reader:
+#                 if row[0] == username and row[1] == password:
+#                     session['username'] = username
+#                     session['linkedin_token'] = row[2] if len(row) > 2 else None
+#                     session['twitter_token'] = row[3] if len(row) > 3 else None
+#                     session['twitter_token_secret'] = row[4] if len(row) > 4 else None
+#                     return redirect(url_for('settings'))
+#             flash('Invalid username or password. Please try again.')
+#             return redirect(url_for('user_login'))
+#     return render_template('user_login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # Check if the username already exists
-        with open('users.csv', mode='r', newline='') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                if row[0] == username:
-                    flash('Username already exists. Please choose a different username.')
-                    return redirect(url_for('register'))
-        # Save the new user
-        with open('users.csv', mode='a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([username, password, '', '', ''])
-        return redirect(url_for('register_success'))
-    return render_template('register.html')
+# @app.route('/register', methods=['GET', 'POST'])
+# def register():
+#     if request.method == 'POST':
+#         username = request.form.get('username')
+#         password = request.form.get('password')
+#         # Check if the username already exists
+#         with open('users.csv', mode='r', newline='') as file:
+#             reader = csv.reader(file)
+#             for row in reader:
+#                 if row[0] == username:
+#                     flash('Username already exists. Please choose a different username.')
+#                     return redirect(url_for('register'))
+#         # Save the new user
+#         with open('users.csv', mode='a', newline='') as file:
+#             writer = csv.writer(file)
+#             writer.writerow([username, password, '', '', ''])
+#         return redirect(url_for('register_success'))
+#     return render_template('register.html')
 
 @app.route('/register_success')
 def register_success():
@@ -224,8 +228,10 @@ def linkedin_login():
     state = generate_state()
     session['linkedin_oauth_state'] = state
     user_id = request.args.get('user_id')
+    print(user_id)
     if user_id:
         session['username'] = user_id
+        print(session['username'])
     params = {
         'response_type': 'code',
         'client_id': LINKEDIN_CLIENT_ID,
@@ -234,7 +240,7 @@ def linkedin_login():
         'scope': LINKEDIN_SCOPE
     }
     auth_request = requests.Request('GET', LINKEDIN_AUTH_URL, params=params).prepare()
-    print(user_id)
+    print(session['username'])
     print(f"LinkedIn Client ID: {LINKEDIN_CLIENT_ID}")
     return redirect(auth_request.url)
 
@@ -501,7 +507,11 @@ def submit():
 #################################
 
 def generatePostText(tone, topic, language):
-    initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}."
+    scraped_text = scrape_data(topic)
+    if scraped_text is not None:
+        initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}. The data is: {scraped_text}"
+    else:
+        initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}."
     print("Post Pioneer Text Generation Test")
     model = CURRENT_MODEL
     messages = [{"role": "system", "content": initial_prompt}];
@@ -520,7 +530,7 @@ def generatepostImage(tone, topic):
     print(response['message']['content'])
     prompt = response['message']['content'].split("</think>",1)[1]
     print("Post Pioneer Stable Diffusion Test")
-    image = pipe(prompt, num_inference_steps=5).images[0]
+    image = pipe(prompt, num_inference_steps=20).images[0]
     buffered = BytesIO()
     image.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode("utf-8")
@@ -586,8 +596,48 @@ def hourly_trigger():
     else:
         print("No users found in the database.")
 
+stripe.api_key = "sk_test_51QuKO2KsmLUG0fTBiVvflwSJ94bwiEHx8sTnXyCHKhFNA6JKIKmLX0y9fKVohnPlmrUP86osPlZRgsubXyMMjXlY00Op5RpSJ8"  # Replace with your actual Stripe secret key.
+
+@app.route("/process-payment", methods=["POST"])
+def process_payment():
+    data = request.get_json()
+    payment_token_str = data.get("paymentToken")
+    print(f"Receieved payment token: {payment_token_str}")
+    print(f"Request payload: {data}")
+    
+    if not payment_token_str:
+        return jsonify({"error": "Missing payment token"}), 400
+
+    try:
+        payment_token = json.loads(payment_token_str).get("id")
+
+        charge = stripe.Charge.create(
+            amount=100,  
+            currency="cad",
+            source=payment_token,
+            description="Test payment"
+        )
+        return jsonify({"status": "success", "charge": charge})
+    except Exception as e:
+        print(f"Error processing payment: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/hil_submit", methods=["POST"])
+def hil_submit():
+    data = request.get_json()
+    print(data)
+
+    generated_post = data.get('generated_post')
+    access_token = get_linkedin_token(data.get('userid'))
+    make_linkedin_post(access_token, generated_post)
+    return jsonify({"All good": "Good"}), 200
+
+
+
 # Start the scheduler
 scheduler.start()
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=5000, debug=False)
