@@ -60,12 +60,100 @@ def scrape_data(topic):
             formatted_news += f"{item['headline']}\n{item['summary']}\n\n"
 
         return formatted_news.strip()
+    
+    elif topic == 'business':
+        url = 'https://www.bbc.com/business'
 
+        # Send the HTTP request
+        response = requests.get(url, headers=headers)
+
+        # Check if the request was successful
+        if response.status_code != 200:
+            return f"Failed to retrieve data. HTTP Status Code: {response.status_code}"
+
+        # Parse the HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        business_items = []
+        headlines = soup.find_all('h2', {'data-testid': 'card-headline'})
+        paragraphs = soup.find_all('p')
+
+        for headline, paragraph in zip(headlines[:10], paragraphs):
+            business_items.append({
+                'headline': headline.get_text(strip=True),
+                'summary': paragraph.get_text(strip=True)
+            })
+
+        # Format extracted business data
+        formatted_news = ""
+        for item in business_items:
+            formatted_news += f"{item['headline']}\n{item['summary']}\n\n"
+
+        return formatted_news.strip()
+
+    elif topic == 'arts':
+        url = 'https://www.bbc.com/arts'
+
+        # Send the HTTP request
+        response = requests.get(url, headers=headers)
+
+        # Check if the request was successful
+        if response.status_code != 200:
+            return f"Failed to retrieve data. HTTP Status Code: {response.status_code}"
+
+        # Parse the HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        business_items = []
+        headlines = soup.find_all('h2', {'data-testid': 'card-headline'})
+        paragraphs = soup.find_all('p')
+
+        for headline, paragraph in zip(headlines[:10], paragraphs):
+            business_items.append({
+                'headline': headline.get_text(strip=True),
+                'summary': paragraph.get_text(strip=True)
+            })
+
+        # Format extracted business data
+        formatted_news = ""
+        for item in business_items:
+            formatted_news += f"{item['headline']}\n{item['summary']}\n\n"
+
+        return formatted_news.strip()
+    
+    elif topic == 'travel':
+        url = 'https://www.bbc.com/travel'
+
+        # Send the HTTP request
+        response = requests.get(url, headers=headers)
+
+        # Check if the request was successful
+        if response.status_code != 200:
+            return f"Failed to retrieve data. HTTP Status Code: {response.status_code}"
+
+        # Parse the HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        business_items = []
+        headlines = soup.find_all('h2', {'data-testid': 'card-headline'})
+        paragraphs = soup.find_all('p')
+
+        for headline, paragraph in zip(headlines[:10], paragraphs):
+            business_items.append({
+                'headline': headline.get_text(strip=True),
+                'summary': paragraph.get_text(strip=True)
+            })
+
+        # Format extracted business data
+        formatted_news = ""
+        for item in business_items:
+            formatted_news += f"{item['headline']}\n{item['summary']}\n\n"
+
+        return formatted_news.strip()
+    
     else:
-        return None
+        None
 
 def generate_post_from_llm(prompt):
     # Placeholder function to generate a post from the LLM
     # Replace this with actual LLM API call
     return f"Generated post based on the prompt: {prompt}"
 
+print(scrape_data('travel'))
