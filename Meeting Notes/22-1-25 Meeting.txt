@@ -1,0 +1,6 @@
+22/1/25
+- further sub task allocation/division
+	- shuffling around tasks so that some subtasks which were causing overlap between people and thus could not be completed were fixed. 
+- going over capabilities and understanding of subject matter again
+	- who's willing to learn new tech
+- working on the project proposal

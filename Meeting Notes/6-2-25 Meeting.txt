@@ -1,0 +1,6 @@
+6/2/25
+- Karan reporting on Twitter API progress
+- Will reporting on LinkedIn progress
+- Further backend expansion
+- Miscommunication leading to UI being created in Go and Fiber instead of React and Python, requiring refactoring
+- discussion about using locally hosted DeepSeek model instead of making calls to the ChatGPT API

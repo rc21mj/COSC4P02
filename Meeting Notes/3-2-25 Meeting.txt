@@ -1,0 +1,5 @@
+3/2/25
+- Discussion of what to use for user interface, how it should be integrated with backend
+	- settled on React.js for the front end, with Python using Flask for the backend. 
+- Discussion of how Firebase would integrate with the flask server
+- thoughts on how to save user data

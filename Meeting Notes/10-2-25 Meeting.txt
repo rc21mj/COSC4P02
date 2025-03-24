@@ -1,0 +1,5 @@
+10/2/25
+- Updates on UI refactoring by Nadine and Ritika
+	- discussion for how to integrate front end with flask, more learning needed. 
+- Shihab working on UI functionality and webscraping logic. 
+- Karan almost done with Twitter API, restructuring code within repo. 
