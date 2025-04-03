@@ -14,6 +14,7 @@ const PreferencesForm = () => {
     schedule: "daily",
     edit: "false",
 	  language: "english",
+    customHashtags: "",
 	  userid: "failedSet"
   });
   const navigate = useNavigate();
@@ -112,8 +113,15 @@ const PreferencesForm = () => {
           required
           style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
         />
-
-
+      <label style={{ fontWeight: "bold" }}>Add Your Own Hashtags (optional):</label>
+        <input
+          type="text"
+          name="customHashtags"
+          value={formData.customHashtags}
+          onChange={handleChange}
+          placeholder="#example #yourtags"
+          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+        />
         <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "white", border: "none" }}>
           Submit Preferences
         </button>

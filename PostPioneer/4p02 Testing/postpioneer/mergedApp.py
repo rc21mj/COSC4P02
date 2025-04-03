@@ -34,11 +34,11 @@ from flask_cors import CORS
 
 print("Loading Stable Diffusion model...")
 MODEL_ID = "CompVis/stable-diffusion-v1-4"
-CURRENT_MODEL = "deepseek-r1:14b"
-pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
-pipe.to("cuda")
-#pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float32)
-#pipe.to("cpu")
+CURRENT_MODEL = "deepseek-r1:1.5b"
+#pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
+#pipe.to("cuda")
+pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float32)
+pipe.to("cpu")
 
 print("Model loaded successfully!")
 CSV_FILE = "responses.csv"
@@ -50,7 +50,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("PostPioneer\\4p02 Testing\postpioneer\credentials.json")
+cred = credentials.Certificate("credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -479,6 +479,7 @@ def submit():
     edit = data.get("edit")
     language = data.get("language")
     userid = data.get("userid")
+    hashtags = data.get("customHashtags")
     print(userid)
     if not (tone and topic and schedule and edit and userid and language):
         return jsonify({"error": "Missing fields"}), 400
@@ -508,7 +509,7 @@ def submit():
         writer.writerow([tone, topic, schedule, edit, ""])
     base64_image = generatepostImage(tone,topic)
     return jsonify(
-        {"message": f"Data={data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
+        {"message": f"{data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
 
 #################################
 # Post Generation Logic
