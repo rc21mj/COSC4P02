@@ -38,7 +38,7 @@ The project is a SaaS web app that enables users to create social media posts by
   - Have `npm` installed
   - Run `npm install react-scripts` and `npm install firebaseui`
   - Run `npm start`
-- To run the back end, open your command line and navigate to `PostPioneer/frontend`
+- To run the back end, open your command line and navigate to `PostPioneer/backend`
   - Have `Python` and `pip` installed
   - Run `pip install firebase-admin`, and `pip install ollama`
   - Run `py Save.py`
