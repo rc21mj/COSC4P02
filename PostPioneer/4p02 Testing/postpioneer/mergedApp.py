@@ -642,6 +642,22 @@ def hil_submit():
     make_linkedin_post(access_token, generated_post)
     return jsonify({"All good": "Good"}), 200
 
+#################################
+# Dashboard Logic
+#################################
+
+# START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
+def pause_scheduling():
+    return jsonify({"message": "Scheduling paused."}), 200
+def cancel_scheduling():
+    return jsonify({"message": "Scheduling cancelled."}), 200
+def change_scheduling():
+    return jsonify({"message": "Scheduling changed."}), 200
+# END OF DASHBOARD SCHEDULING PLACEHOLDERS #
+
+
+
+
 
 
 # Start the scheduler
