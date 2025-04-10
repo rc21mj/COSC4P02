@@ -13,6 +13,7 @@ import Settings from "./Settings";
 import About from "./About";
 import HowitWorks from "./HowitWorks";
 import Register from "./Register";
+import Dashboard from "./Dashboard";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/posting" element={<TwitterPosting />} />
           <Route path="/editPosting" element={<EditPosting />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Layout1>
     </Router>
