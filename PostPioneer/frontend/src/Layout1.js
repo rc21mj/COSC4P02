@@ -47,13 +47,7 @@ function Layout1({ children }) {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/how-it-works">How it Works</Link>
-            </li>
-            <li>
-              <Link to="/support">Support Page</Link>
+              <Link to="/dashboard">Dashboard</Link>
             </li>
             {user ? (
               <li>
@@ -94,6 +88,19 @@ function Layout1({ children }) {
       <div className="content">{children}</div>
 
       <footer>
+        <nav>
+        <ul>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/how-it-works">How it Works</Link>
+          </li>
+          <li>
+            <Link to="/support">Contact Support</Link>
+          </li>
+        </ul>
+        </nav>
         <p>&copy; 2025 PostPioneer. All rights reserved.</p>
       </footer>
     </>
