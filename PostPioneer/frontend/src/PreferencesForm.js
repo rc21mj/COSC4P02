@@ -29,6 +29,8 @@ const PreferencesForm = () => {
   },[]);
   const [message, setMessage] = useState("");
   const [image, setImage] = useState("");
+  const [previewImage, setPreviewImage] = useState("");
+  const [customImageEnabled, setCustomImageEnabled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -53,11 +55,25 @@ const PreferencesForm = () => {
     setIsSubmitting(false);
 	}
   };
-  
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result;
+        setFormData(prevData => ({
+          ...prevData,
+          customImageBase64: base64String
+        }));
+        setPreviewImage(base64String); // <-- new line to set preview
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 /** */
   return (
-    <div style={{ fontFamily: "Courier, monospace", backgroundColor: "#ebf1f2", padding: "20px" }}>
-      <h1 style={{ textAlign: "center", color: "#333" }}>Choose Your Preferences</h1>
+    <div style={{padding: "20px" }}>
+      <h1 style={{ textAlign: "center", color: "#333" }}>Generate a Post</h1>
       <form 
         onSubmit={handleSubmit}
         style={{
@@ -113,6 +129,27 @@ const PreferencesForm = () => {
           required
           style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
         />
+    <label style={{ fontWeight: "bold" }}>Add Custom Image:</label>
+    <select
+      name="customImageEnabled"
+      value={customImageEnabled ? "true" : "false"}
+      onChange={(e) => setCustomImageEnabled(e.target.value === "true")}
+      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+    >
+      <option value="false">false</option>
+      <option value="true">true</option>
+    </select>
+        {customImageEnabled && (
+          <div style={{ marginBottom: "10px" }}>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleFileChange}
+              style={{ width: "100%", padding: "10px" }}
+            />
+          </div>
+        )}
+        
       <label style={{ fontWeight: "bold" }}>Add Your Own Hashtags (optional):</label>
         <input
           type="text"
