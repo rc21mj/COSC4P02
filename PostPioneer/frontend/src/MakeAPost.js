@@ -6,7 +6,7 @@ import {useNavigate } from "react-router-dom";
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-const PreferencesForm = () => {
+const MakeAPost = () => {
 
   const [formData, setFormData] = useState({
     tone: "formal",
@@ -174,4 +174,4 @@ const PreferencesForm = () => {
   );
 };
 
-export default PreferencesForm;
+export default MakeAPost;
