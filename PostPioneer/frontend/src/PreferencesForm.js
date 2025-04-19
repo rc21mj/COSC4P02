@@ -10,7 +10,7 @@ const PreferencesForm = () => {
 
   const [formData, setFormData] = useState({
     tone: "formal",
-    topic: "",
+    topic: "sports",
     schedule: "daily",
     edit: "false",
 	  language: "english",
@@ -94,16 +94,15 @@ const PreferencesForm = () => {
           <option value="professional">Professional</option>
         </select>
 
-        <label style={{ fontWeight: "bold" }}>Enter Topic:</label>
-        <input
-          type="text"
-          name="topic"
-          value={formData.topic}
-          onChange={handleChange}
-          placeholder="Type your topic..."
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        />
+        <label style={{ fontWeight: "bold" }}>Select Topic:</label>
+        <select name="topic" value={formData.topic} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
+          <option value="sports">Sports</option>
+          <option value="dancing">Dancing</option>
+          <option value="elephant">Elephant</option>
+          <option value="soul">Soul</option>
+          <option value="stars">Stars</option>
+          <option value="eggs">Eggs</option>
+        </select>
 
         <label style={{ fontWeight: "bold" }}>Select Schedule:</label>
         <select name="schedule" value={formData.schedule} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
