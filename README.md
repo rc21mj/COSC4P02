@@ -31,6 +31,7 @@ The project is a SaaS web app that enables users to create social media posts by
 - 'pip install diffusers'
 - 'pip install torch'
 - 'pip install transformers'
+- 'ollama serve'
 - Install DeepSeek (currently using 1.5b)
   - Before your first run use the command: `ollama run deepseek-r1:1.5b`
   - For other versions change the postfix in the commandline (currently 1.5b) and change the model field to that model in Save.py
