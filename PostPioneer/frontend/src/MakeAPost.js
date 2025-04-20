@@ -10,7 +10,7 @@ const MakeAPost = () => {
 
   const [formData, setFormData] = useState({
     tone: "formal",
-    topic: "sports",
+    topic: "dancing",
     schedule: "daily",
     edit: "false",
 	  language: "english",
@@ -32,16 +32,34 @@ const MakeAPost = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [customImageEnabled, setCustomImageEnabled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingDots, setLoadingDots] = useState(".");
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Used for loading animation dots
+  useEffect(() => {
+    let interval;
+  if (isSubmitting) {
+    setLoadingDots("."); // Reset at the beginning
+    interval = setInterval(() => {
+      setLoadingDots(prev => (prev.length >= 3 ? "." : prev + "."));
+    }, 400);
+  }
+  return () => {
+    clearInterval(interval);
+  };
+}, [isSubmitting]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 	if (isSubmitting) return; // Prevent duplicate requests
+
 	setIsSubmitting(true);
+  setLoadingDots(".");        // Reset loading dots
+
     try {
-      const response = await axios.post("http://localhost:5000/submit", formData);
+      const response = await axios.post("http://localhost:3000/submit", formData);
       //setMessage(response.data.message);
 	    //setImage(response.data.image);
       const generatedText = response.data.message;
@@ -161,6 +179,13 @@ const MakeAPost = () => {
         <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "white", border: "none" }}>
           Submit Preferences
         </button>
+
+        {isSubmitting && (
+          <p style={{ textAlign: "center", marginTop: "10px" }}>
+              Generating post{loadingDots}
+          </p>
+        )}
+
 
         {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
 		{image && (
