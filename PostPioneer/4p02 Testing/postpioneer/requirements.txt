@@ -1,4 +1,9 @@
 Flask
 requests
 python-dotenv
-```
+transformers
+torch
+firebaseadmin
+ollama
+diffusers
+
