@@ -13,19 +13,19 @@ const MakeAPost = () => {
     topic: "dancing",
     schedule: "daily",
     edit: "false",
-	  language: "english",
+    language: "english",
     customHashtags: "",
-	  userid: "failedSet"
+    userid: "failedSet"
   });
   const navigate = useNavigate();
   //set userID
   React.useEffect(() => {
-	firebase.auth().onAuthStateChanged(function(user) {
-	setFormData(prevData => ({
-	...prevData,
-	userid: user ? user.uid : "guest",
-	}));
-	});
+  firebase.auth().onAuthStateChanged(function(user) {
+  setFormData(prevData => ({
+  ...prevData,
+  userid: user ? user.uid : "guest",
+  }));
+  });
   },[]);
   const [message, setMessage] = useState("");
   const [image, setImage] = useState("");
@@ -53,15 +53,15 @@ const MakeAPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-	if (isSubmitting) return; // Prevent duplicate requests
+  if (isSubmitting) return; // Prevent duplicate requests
 
-	setIsSubmitting(true);
+  setIsSubmitting(true);
   setLoadingDots(".");        // Reset loading dots
 
     try {
       const response = await axios.post("http://localhost:3000/submit", formData);
       //setMessage(response.data.message);
-	    //setImage(response.data.image);
+      //setImage(response.data.image);
       const generatedText = response.data.message;
       const generatedImage = response.data.image;
 
@@ -71,7 +71,7 @@ const MakeAPost = () => {
       setMessage("Error submitting preferences.");
     } finally {
     setIsSubmitting(false);
-	}
+  }
   };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -89,114 +89,191 @@ const MakeAPost = () => {
     }
   };
 /** */
-  return (
-    <div style={{padding: "20px" }}>
-      <h1 style={{ textAlign: "center", color: "#333" }}>Generate a Post</h1>
-      <form 
+return (
+  <div className="min-h-screen bg-gradient-to-b from-[#0D1B2A] to-[#E2E4E6] font-inter flex items-center justify-center py-12 px-4">
+    <div className="w-full max-w-lg">
+      <form
         onSubmit={handleSubmit}
-        style={{
-          maxWidth: "500px",
-          margin: "auto",
-          padding: "20px",
-          backgroundColor: "#fff",
-          borderRadius: "8px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        }}
+        className="bg-white rounded-lg shadow-md p-8 space-y-6"
       >
-        <label style={{ fontWeight: "bold" }}>Select Tone:</label>
-        <select name="tone" value={formData.tone} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
-          <option value="formal">Formal</option>
-          <option value="educational">Educational</option>
-          <option value="comedic">Comedic</option>
-          <option value="casual">Casual</option>
-          <option value="professional">Professional</option>
-        </select>
+        <h1 className="text-3xl md:text-4xl font-poppins font-semibold text-[#1E1E1E] text-center">
+          Generate a Post
+        </h1>
 
-        <label style={{ fontWeight: "bold" }}>Select Topic:</label>
-        <select name="topic" value={formData.topic} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
-          <option value="sports">Sports</option>
-          <option value="dancing">Dancing</option>
-          <option value="elephant">Elephant</option>
-          <option value="soul">Soul</option>
-          <option value="stars">Stars</option>
-          <option value="eggs">Eggs</option>
-        </select>
+        {/* Select Tone */}
+        <div>
+          <label htmlFor="tone" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Select Tone:
+          </label>
+          <select
+            id="tone"
+            name="tone"
+            value={formData.tone}
+            onChange={handleChange}
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          >
+            <option value="formal">Formal</option>
+            <option value="educational">Educational</option>
+            <option value="comedic">Comedic</option>
+            <option value="casual">Casual</option>
+            <option value="professional">Professional</option>
+          </select>
+        </div>
 
-        <label style={{ fontWeight: "bold" }}>Select Schedule:</label>
-        <select name="schedule" value={formData.schedule} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
-          <option value="hourly">Hourly</option>
-          <option value="daily">Daily</option>
-          <option value="biweekly">Biweekly</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
+        {/* Select Topic */}
+        <div>
+          <label htmlFor="topic" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Select Topic:
+          </label>
+          <select
+            id="topic"
+            name="topic"
+            value={formData.topic}
+            onChange={handleChange}
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          >
+            <option value="sports">Sports</option>
+            <option value="dancing">Dancing</option>
+            <option value="elephant">Elephant</option>
+            <option value="soul">Soul</option>
+            <option value="stars">Stars</option>
+            <option value="eggs">Eggs</option>
+          </select>
+        </div>
 
-        <label style={{ fontWeight: "bold" }}>Review & Edit Post before Posting:</label>
-        <select name="edit" value={formData.edit} onChange={handleChange} style={{ width: "100%", padding: "10px", marginBottom: "10px" }}>
-          <option value="false">false</option>
-          <option value="true">true</option>
-        </select>
-		<label style={{ fontWeight: "bold" }}>Language</label>
-        <input
-          type="text"
-          name="language"
-          value={formData.language}
-          onChange={handleChange}
-          placeholder="Type your language..."
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        />
-    <label style={{ fontWeight: "bold" }}>Add Custom Image:</label>
-    <select
-      name="customImageEnabled"
-      value={customImageEnabled ? "true" : "false"}
-      onChange={(e) => setCustomImageEnabled(e.target.value === "true")}
-      style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-    >
-      <option value="false">false</option>
-      <option value="true">true</option>
-    </select>
+        {/* Select Schedule */}
+        <div>
+          <label htmlFor="schedule" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Select Schedule:
+          </label>
+          <select
+            id="schedule"
+            name="schedule"
+            value={formData.schedule}
+            onChange={handleChange}
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          >
+            <option value="hourly">Hourly</option>
+            <option value="daily">Daily</option>
+            <option value="biweekly">Biweekly</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+        </div>
+
+        {/* Review & Edit */}
+        <div>
+          <label htmlFor="edit" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Review & Edit Post before Posting:
+          </label>
+          <select
+            id="edit"
+            name="edit"
+            value={formData.edit}
+            onChange={handleChange}
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          >
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select>
+        </div>
+
+        {/* Language */}
+        <div>
+          <label htmlFor="language" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Language
+          </label>
+          <input
+            id="language"
+            type="text"
+            name="language"
+            value={formData.language}
+            onChange={handleChange}
+            placeholder="Type your language..."
+            required
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          />
+        </div>
+
+        {/* Custom Image Toggle */}
+        <div>
+          <label htmlFor="customImageEnabled" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Add Custom Image:
+          </label>
+          <select
+            id="customImageEnabled"
+            name="customImageEnabled"
+            value={customImageEnabled ? "true" : "false"}
+            onChange={(e) => setCustomImageEnabled(e.target.value === "true")}
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          >
+            <option value="false">false</option>
+            <option value="true">true</option>
+          </select>
+        </div>
+
         {customImageEnabled && (
-          <div style={{ marginBottom: "10px" }}>
-            <input 
-              type="file" 
-              accept="image/*" 
+          <div>
+            <input
+              type="file"
+              accept="image/*"
               onChange={handleFileChange}
-              style={{ width: "100%", padding: "10px" }}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                         file:rounded-md file:border-0
+                         file:bg-[#E2E4E6] file:text-[#1E1E1E]
+                         hover:file:bg-[#D1D4D6]"
             />
           </div>
         )}
-        
-      <label style={{ fontWeight: "bold" }}>Add Your Own Hashtags (optional):</label>
-        <input
-          type="text"
-          name="customHashtags"
-          value={formData.customHashtags}
-          onChange={handleChange}
-          placeholder="#example #yourtags"
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        />
-        <button type="submit" style={{ width: "100%", padding: "10px", backgroundColor: "#007BFF", color: "white", border: "none" }}>
-          Submit Preferences
-        </button>
 
-        {isSubmitting && (
-          <p style={{ textAlign: "center", marginTop: "10px" }}>
-              Generating post{loadingDots}
-          </p>
+        {/* Custom Hashtags */}
+        <div>
+          <label htmlFor="customHashtags" className="block text-base font-medium text-[#1E1E1E] mb-2">
+            Add Your Own Hashtags (optional):
+          </label>
+          <input
+            id="customHashtags"
+            type="text"
+            name="customHashtags"
+            value={formData.customHashtags}
+            onChange={handleChange}
+            placeholder="#example #yourtags"
+            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
+          />
+        </div>
+
+        {/* Submit */}
+        <div>
+          <button
+            type="submit"
+            //disabled={isSubmitting}
+            className="w-full py-3 bg-[#00B4D8] text-white font-poppins font-semibold rounded-md hover:bg-[#0099C1] transition"
+          >
+            {isSubmitting ? `Generating post${loadingDots}` : "Submit Preferences"}
+          </button>
+        </div>
+
+        {/* Feedback */}
+        {message && (
+          <p className="text-green-600 text-center mt-4">{message}</p>
         )}
 
-
-        {message && <p style={{ color: "green", marginTop: "10px" }}>{message}</p>}
-		{image && (
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <h3>Generated Image:</h3>
-            <img src={image} alt="Generated" style={{ width: "100%", maxHeight: "400px", borderRadius: "8px" }} />
+        {image && (
+          <div className="mt-6 text-center">
+            <h3 className="font-poppins font-semibold text-lg text-[#1E1E1E] mb-2">
+              Generated Image:
+            </h3>
+            <img
+              src={image}
+              alt="Generated"
+              className="mx-auto w-full max-h-64 object-contain rounded-md"
+            />
           </div>
         )}
       </form>
     </div>
-  );
+  </div>
+);
 };
 
 export default MakeAPost;
