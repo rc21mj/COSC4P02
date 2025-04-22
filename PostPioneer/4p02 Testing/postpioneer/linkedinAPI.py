@@ -101,14 +101,18 @@ def make_linkedin_post(access_token, text, image_path=None):
         media_category = "IMAGE"
         media_content = [{
             "status": "READY",
-            "description": {
-                "text": "Optional image description"  # Customize if needed
-            },
-            "media": asset,
-            "title": {
-                "text": "Optional title"  # Customize if needed
-            }
+            "media": asset
         }]
+        #media_content = [{
+        #    "status": "READY",
+        #    "description": {
+        #        "text": "Optional image description" 
+        #    },
+        #    "media": asset,
+        #    "title": {
+        #        "text": "Optional title" 
+        #    }
+        #}]
     else:
         media_category = "NONE"
         media_content = None
@@ -141,16 +145,3 @@ def make_linkedin_post(access_token, text, image_path=None):
         return response.json()
     else:
         return {"id": response.headers.get("x-restli-id")}
-
-def save_linkedin_token(username, token):
-    # Save the LinkedIn token for the user
-    users = []
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                row[2] = token
-            users.append(row)
-    with open('users.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(users)
