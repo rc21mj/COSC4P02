@@ -28,10 +28,6 @@ from flask import Flask, request, jsonify,json
 import stripe
 from flask_cors import CORS
 
-
-
-
-
 print("Loading Stable Diffusion model...")
 MODEL_ID = "CompVis/stable-diffusion-v1-4"
 CURRENT_MODEL = "deepseek-r1:1.5b"
@@ -50,7 +46,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("credentials.json")
+cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -70,99 +66,6 @@ TWITTER_REDIRECT_URI = os.getenv('TWITTER_REDIRECT_URI')
 TWITTER_AUTH_URL = "https://api.twitter.com/oauth/authenticate"
 TWITTER_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
 TWITTER_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-@app.route('/how_it_works')
-def how_it_works():
-    return render_template('how_it_works.html')
-
-@app.route('/sample_posts')
-def sample_posts():
-    return render_template('sample_posts.html')
-
-# @app.route('/user_login', methods=['GET', 'POST'])
-# def user_login():
-#     if request.method == 'POST':
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-#         # Verify the user's credentials
-#         with open('users.csv', mode='r', newline='') as file:
-#             reader = csv.reader(file)
-#             for row in reader:
-#                 if row[0] == username and row[1] == password:
-#                     session['username'] = username
-#                     session['linkedin_token'] = row[2] if len(row) > 2 else None
-#                     session['twitter_token'] = row[3] if len(row) > 3 else None
-#                     session['twitter_token_secret'] = row[4] if len(row) > 4 else None
-#                     return redirect(url_for('settings'))
-#             flash('Invalid username or password. Please try again.')
-#             return redirect(url_for('user_login'))
-#     return render_template('user_login.html')
-
-# @app.route('/register', methods=['GET', 'POST'])
-# def register():
-#     if request.method == 'POST':
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-#         # Check if the username already exists
-#         with open('users.csv', mode='r', newline='') as file:
-#             reader = csv.reader(file)
-#             for row in reader:
-#                 if row[0] == username:
-#                     flash('Username already exists. Please choose a different username.')
-#                     return redirect(url_for('register'))
-#         # Save the new user
-#         with open('users.csv', mode='a', newline='') as file:
-#             writer = csv.writer(file)
-#             writer.writerow([username, password, '', '', ''])
-#         return redirect(url_for('register_success'))
-#     return render_template('register.html')
-
-@app.route('/register_success')
-def register_success():
-    return render_template('register_success.html')
-
-@app.route('/dashboard')
-def dashboard():
-    if 'username' not in session:
-        return redirect(url_for('user_login'))
-    # Placeholder functions to fetch user-specific data
-    recent_posts = fetch_user_posts(session['username'])
-    user_stats = fetch_user_stats(session['username'])
-    return render_template('dashboard.html', recent_posts=recent_posts, user_stats=user_stats)
-
-@app.route('/settings', methods=['GET', 'POST'])
-def settings():
-    if 'username' not in session:
-        return redirect(url_for('user_login'))
-    if request.method == 'POST':
-        if 'connect_linkedin' in request.form:
-            return redirect(url_for('linkedin_login'))
-        elif 'remove_linkedin' in request.form:
-            remove_linkedin_token(session['username'])
-            session['linkedin_token'] = None
-            flash('LinkedIn token removed successfully.')
-            return redirect(url_for('settings'))
-        elif 'connect_twitter' in request.form:
-            return redirect(url_for('twitter_login'))
-        elif 'remove_twitter' in request.form:
-            remove_twitter_token(session['username'])
-            session['twitter_token'] = None
-            session['twitter_token_secret'] = None
-            flash('Twitter token removed successfully.')
-            return redirect(url_for('settings'))
-    linkedin_token = get_linkedin_token(session['username'])
-    linkedin_connected = linkedin_token is not None
-    twitter_token = get_twitter_token(session['username'])
-    twitter_connected = twitter_token is not None
-    return render_template('settings.html', linkedin_connected=linkedin_connected, twitter_connected=twitter_connected)
 
 @app.route('/make_post', methods=['GET', 'POST'])
 def make_post():
@@ -222,11 +125,6 @@ def make_post():
     
     return render_template('make_post.html')
 
-@app.route('/logout')
-def logout():
-    session.clear()
-    flash('You have been logged out.')
-    return redirect(url_for('index'))
 
 #################################
 # LinkedIn OAuth & API Routes
@@ -330,6 +228,7 @@ def remove_twitter():
     db.reference("Users").child(user_id).child("Credentials").update({'TwitterToken' : None,
                                                                        'TwitterTokenSecret' : None})
     return redirect('http://localhost:3000/settings')
+
 def fetch_user_posts(username):
     # Placeholder function to fetch user-specific posts
     return [
@@ -393,60 +292,21 @@ def save_twitter_token(username, token, token_secret):
     db.reference("Users").child(username).child("Credentials").update({'TwitterToken' : token,
                                                                        'TwitterTokenSecret' : token_secret})
     # Save the Twitter token for the user
-    """
-    users = []
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                row[3] = token
-                row[4] = token_secret
-            users.append(row)
-    with open('users.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(users)
-    """
 
 def remove_twitter_token(username):
     # Remove the Twitter token for the user
     db.reference("Users").child(username).child("Credentials").update({'TwitterToken' : None,
                                                                        'TwitterTokenSecret' : None})
-    """
-    users = []
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                row[3] = ''
-                row[4] = ''
-            users.append(row)
-    with open('users.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(users)
-    """
+
 
 def get_twitter_token(username):
     # Retrieve the Twitter token for the user
-    """
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                return row[3] if len(row) > 3 and row[3] else None
-    return None
-    """
+
     return db.reference("Users").child(username).child("Credentials").child('TwitterToken').get()
 
 def get_twitter_token_secret(username):
     # Retrieve the Twitter token secret for the user
-    """
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                return row[4] if len(row) > 4 and row[4] else None
-    return None
-    """
+
     return db.reference("Users").child(username).child("Credentials").child('TwitterTokenSecret').get()
 
 def make_twitter_post(token, token_secret, post):
@@ -645,6 +505,15 @@ def hil_submit():
 #################################
 # Dashboard Logic
 #################################
+@app.route("/linkedin-analytics")
+def get_analytics():
+    dummy_data = [
+        {"date": "2024-04-01", "impressions": 120, "clicks": 30},
+        {"date": "2024-04-02", "impressions": 200, "clicks": 50},
+        {"date": "2024-04-03", "impressions": 180, "clicks": 45},
+        {"date": "2024-04-04", "impressions": 220, "clicks": 60},
+    ]
+    return jsonify(dummy_data)
 
 # START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
 def pause_scheduling():

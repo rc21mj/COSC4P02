@@ -250,3 +250,18 @@ button.banner-button:hover {
   height: 300px; /* Increased height */
   margin: 0 auto 20px auto;
 }
+
+/* Dashboard styles */
+.MuiCard-root {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+.MuiCardContent-root h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.MuiTableContainer-root {
+  margin-top: 1rem;
+}

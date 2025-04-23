@@ -38,85 +38,71 @@ function Layout1({ children }) {
   };
 
   return (
-  <>
-    <header className="bg-[#0D1B2A] text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <>
+      <header>
+        <h1>Welcome to PostPioneer</h1>
         <nav>
-          <ul className="flex justify-center space-x-10 font-inter text-lg">
+          <ul>
             <li>
-              <Link
-                to="/"
-                className="hover:text-[#00D9D4] transition-colors"
-              >
-                Home
-              </Link>
+              <Link to="/">Home</Link>
             </li>
             <li>
-              <Link
-                to="/dashboard"
-                className="hover:text-[#00D9D4] transition-colors"
-              >
-                Dashboard
-              </Link>
+              <Link to="/about">About</Link>
             </li>
-            {user && (
-              <>
-                <li>
-                  <Link
-                    to="/post_generation"
-                    className="hover:text-[#00D9D4] transition-colors"
-                  >
-                    Generate a Post!
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/payment"
-                    className="hover:text-[#00D9D4] transition-colors"
-                  >
-                    Payment Plan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/settings"
-                    className="hover:text-[#00D9D4] transition-colors"
-                  >
-                    Settings
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    onClick={handleSignOut}
-                    className="hover:text-[#00D9D4] transition-colors"
-                  >
-                    Sign out
-                  </button>
-                </li>
-              </>
-            )}
-            {!user && (
+            <li>
+              <Link to="/how-it-works">How it Works</Link>
+            </li>
+            <li>
+              <Link to="/support">Support Page</Link>
+            </li>
+            {user ? (
               <li>
+                <Link to="/post_generation">Generate a Post!</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li>
+                <Link to="/payment">Payment Plan</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li>
+                <Link to="/dashboard">Dashboard</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li>
+                <Link to="/settings">Settings</Link>
+              </li>
+            ) : null}
+            {user ? (
+              <li class="signOutButton">
                 <Link
-                  to="/login"
-                  className="hover:text-[#00D9D4] transition-colors"
+                  to="/home"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSignOut();
+                  }}
                 >
-                  User Login
+                  Sign out
                 </Link>
+              </li>
+            ) : (
+              <li>
+                <Link to="/login">User Login</Link>
               </li>
             )}
           </ul>
         </nav>
-      </div>
-    </header>
+      </header>
 
-    <div className="content">{children}</div>
+      <div className="content">{children}</div>
 
-    <footer>
-      {/* ...footer unchanged... */}
-    </footer>
-  </>
-);
+      <footer>
+        <p>&copy; 2025 PostPioneer. All rights reserved.</p>
+      </footer>
+    </>
+  );
 }
 
 export default Layout1;
