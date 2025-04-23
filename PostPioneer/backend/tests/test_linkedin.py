@@ -1,6 +1,10 @@
 import pytest
 from flask import session
 from unittest.mock import patch, MagicMock
+import sys, os
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import mergedApp  # Import the full module, not individual functions
 
 @pytest.fixture
