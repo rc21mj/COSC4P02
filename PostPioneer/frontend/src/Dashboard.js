@@ -10,6 +10,11 @@ import {
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import firebase from 'firebase/compat/app';
+import firebaseConfig from './firebaseConfig';
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
 // Dummy data for scheduled posts
 const dummyScheduledPosts = [
@@ -35,6 +40,22 @@ const dummyTotalEngagement = {
 };
 
 export default function Dashboard() {
+  const [formData, setFormData] = useState({
+    userid: "guest",
+    // ... other fields
+  });
+  
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      setFormData((prevData) => ({
+        ...prevData,
+        userid: user ? user.uid : "guest",
+      }));
+    });
+  
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, []);
   const [scheduledPosts, setScheduledPosts] = useState(dummyScheduledPosts);
   const [engagementData, setEngagementData] = useState(dummyEngagementData);
   const [totalEngagement, setTotalEngagement] = useState(dummyTotalEngagement);
@@ -43,20 +64,23 @@ export default function Dashboard() {
 
   // Example function to fetch real data
   useEffect(() => {
-    // Uncomment and modify when backend is ready
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await fetch('/api/dashboard-data');
-    //     const data = await response.json();
-    //     setScheduledPosts(data.scheduledPosts);
-    //     setEngagementData(data.engagementData);
-    //     setTotalEngagement(data.totalEngagement);
-    //   } catch (error) {
-    //     console.error('Error fetching dashboard data:', error);
-    //   }
-    // };
-    // fetchData();
-  }, []);
+    if (formData.userid === "guest") return; // Skip until we have a real user
+  
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/dashboard-data?uid=${formData.userid}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setScheduledPosts(data.scheduledPosts);
+        //setEngagementData(data.engagementData);
+        //setTotalEngagement(data.totalEngagement);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      }
+    };
+  
+    fetchData();
+  }, [formData.userid]);
 
   const handleEdit = (post) => {
     setEditingPost(post);
@@ -83,7 +107,7 @@ export default function Dashboard() {
               <TableHead>
                 <TableRow>
                   <TableCell>Post ID</TableCell>
-                  <TableCell>Platform</TableCell>
+                  <TableCell>Content</TableCell>
                   <TableCell>Frequency</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -92,7 +116,7 @@ export default function Dashboard() {
                 {scheduledPosts.map((post) => (
                   <TableRow key={post.id}>
                     <TableCell>{post.id}</TableCell>
-                    <TableCell>{post.platform}</TableCell>
+                    <TableCell>{post.content}</TableCell>
                     <TableCell>{post.frequency}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEdit(post)}>

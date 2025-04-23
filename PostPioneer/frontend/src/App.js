@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import PreferencesForm from "./PreferencesForm";
+import MakeAPost from "./MakeAPost";
 import FirebaseAuthUI from "./FirebaseAuthUI";
 import SupportForm from "./SupportForm";
 import TestMigration from "./TestMigration";
@@ -25,7 +26,7 @@ function App() {
           <Route path="/login" element={<FirebaseAuthUI />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={<About />} />
-          <Route path="/post_generation" element={<PreferencesForm />} />
+          <Route path="/post_generation" element={<MakeAPost />} />
           <Route path="/how-it-works" element={<HowitWorks />} />
           <Route path="/support" element={<SupportForm />} />
           <Route path="/payment" element={<TestMigration />} />

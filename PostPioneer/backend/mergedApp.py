@@ -46,7 +46,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
+cred = credentials.Certificate("credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -257,6 +257,7 @@ def submit():
     if not (tone and topic and schedule and edit and userid and language):
         return jsonify({"error": "Missing fields"}), 400
     data = generatePostText(tone,topic,language);
+
     ref = db.reference("Users").child(userid).child("UserPosts")
     postID = ref.push({
         "topic": topic,
@@ -265,7 +266,9 @@ def submit():
         "data": "placeholder", #keep placeholder data for now so as to not fill up the database too fast
         "schedule": schedule,
         "language": language,
-        "edit": edit})
+        "edit": edit,
+        "timestamp": datetime.now().isoformat(),
+        "customHashtags": hashtags})
     postID =  postID.key
     
     # Save data to CSV
@@ -280,7 +283,17 @@ def submit():
             writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
 
         writer.writerow([tone, topic, schedule, edit, ""])
+    
+
     base64_image = generatepostImage(tone,topic)
+
+    posts_ref = ref.child(postID).child("Posts")
+    posts_ref.push({
+        "text": data,
+        "image": base64_image,
+        "timestamp": datetime.now().isoformat()
+    })
+
     return jsonify(
         {"message": f"{data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
 
@@ -341,38 +354,42 @@ def hourly_trigger():
     users_ref = db.reference("Users")
     users = users_ref.get()
     # Iterate and print each user and their posts
-    current_time = datetime.datetime.now()
+    current_time = datetime.now()
     if users:
         for user_id, user_data in users.items():
             print(f"User ID: {user_id}")
             if "UserPosts" in user_data:
                 for post_id, post_data in user_data["UserPosts"].items(): 
                     if "schedule" in post_data:
-                        if post_data["schedule"] == "hourly":
-                            print("Hourly post")
-                            print(generatePostText(post_data["tone"], post_data["topic"], post_data["language"]))
-                            generatepostImage(post_data["tone"], post_data["topic"])
-                            print("image generated")
-                        elif (post_data["schedule"] == "daily") and (current_time.hour == 0):
-                            print("Daily post")
-                            print(generatePostText(post_data["tone"], post_data["topic"], post_data["language"]))
-                            generatepostImage(post_data["tone"], post_data["topic"])
-                            print("image generated")
-                        elif (post_data["schedule"] == "weekly") and (current_time.weekday() == 0) and (current_time.hour == 0):
-                            print("Weekly post")
-                            print(generatePostText(post_data["tone"], post_data["topic"], post_data["language"]))
-                            generatepostImage(post_data["tone"], post_data["topic"])
-                            print("image generated")
-                        elif (post_data["schedule"] == "biweekly") and (current_time.weekday() == 0) and (current_time.hour == 0) and (current_time.day % 14 == 0):
-                            print("Biweekly post")
-                            print(generatePostText(post_data["tone"], post_data["topic"], post_data["language"]))
-                            generatepostImage(post_data["tone"], post_data["topic"])
-                            print("image generated")
-                        elif (post_data["schedule"] == "monthly") and (current_time.day== 1) and (current_time.hour == 0):
-                            print("Monthly post")
-                            print(generatePostText(post_data["tone"], post_data["topic"], post_data["language"]))
-                            generatepostImage(post_data["tone"], post_data["topic"])
-                            print("image generated")
+                        should_post = False
+
+                    if post_data["schedule"] == "hourly":
+                        should_post = True
+                    elif post_data["schedule"] == "daily" and current_time.hour == 0:
+                        should_post = True
+                    elif post_data["schedule"] == "weekly" and current_time.weekday() == 0 and current_time.hour == 0:
+                        should_post = True
+                    elif post_data["schedule"] == "biweekly" and current_time.weekday() == 0 and current_time.hour == 0 and current_time.day % 14 == 0:
+                        should_post = True
+                    elif post_data["schedule"] == "monthly" and current_time.day == 1 and current_time.hour == 0:
+                        should_post = True
+
+                    if should_post:
+                        print(f"{post_data['schedule'].capitalize()} post")
+
+                        generated_text = generatePostText(post_data["tone"], post_data["topic"], post_data["language"])
+                        print(generated_text)
+
+                        image_url = generatepostImage(post_data["tone"], post_data["topic"])  # <-- modify this to return a URL
+                        print("Image generated")
+
+                        # 🔥 Save to Firebase
+                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
+                        post_result_ref.push({
+                            "timestamp": current_time.isoformat(),
+                            "text": generated_text,
+                            "image": image_url
+                        })
             else:
                 print("  No UserPosts found.")
     else:
@@ -427,6 +444,36 @@ def get_analytics():
         {"date": "2024-04-04", "impressions": 220, "clicks": 60},
     ]
     return jsonify(dummy_data)
+
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    uid = request.args.get('uid')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+
+    ref = db.reference("Users").child(uid).child("UserPosts")
+    posts_raw = ref.get() or {}
+
+    scheduled_posts = []
+    for post_id, post_data in posts_raw.items():
+        if isinstance(post_data, dict):
+            scheduled_posts.append({
+                "id": post_id,
+                "platform": post_data.get("platform", ""),
+                "frequency": post_data.get("schedule", ""),
+                "content": post_data.get("data", "")
+            })
+    engagement_data = [
+        {"date": "2025-04-20", "likes": 20, "comments": 5},
+        {"date": "2025-04-21", "likes": 35, "comments": 8},
+    ]
+    total_engagement = sum(item["likes"] + item["comments"] for item in engagement_data)
+
+    return jsonify({
+        "scheduledPosts": scheduled_posts,
+        "engagementData": engagement_data,
+        "totalEngagement": total_engagement
+    })
 
 # START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
 def pause_scheduling():
