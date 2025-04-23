@@ -46,7 +46,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
+cred = credentials.Certificate("credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'

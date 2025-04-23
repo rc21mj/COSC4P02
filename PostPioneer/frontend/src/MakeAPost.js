@@ -59,7 +59,7 @@ const MakeAPost = () => {
   setLoadingDots(".");        // Reset loading dots
 
     try {
-      const response = await axios.post("http://localhost:3000/submit", formData);
+      const response = await axios.post("http://localhost:5000/submit", formData);
       //setMessage(response.data.message);
       //setImage(response.data.image);
       const generatedText = response.data.message;
