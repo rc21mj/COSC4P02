@@ -247,45 +247,16 @@ def fetch_user_stats(username):
 def save_linkedin_token(username, token):
     # Save the LinkedIn token for the user
     db.reference("Users").child(username).child("Credentials").update({'LinkedIn' : token})
-    """
-    users = []
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                row[2] = token
-            users.append(row)
-    with open('users.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(users)
-    """
+
 
 def remove_linkedin_token(username):
     # Remove the LinkedIn token for the user
     db.reference("Users").child(username).child("Credentials").update({'LinkedIn': None})
-    """
-    users = []
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                row[2] = ''
-            users.append(row)
-    with open('users.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerows(users)
-    """
+
 
 def get_linkedin_token(username):
     # Retrieve the LinkedIn token for the user
-    """
-    with open('users.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-            if row[0] == username:
-                return row[2] if len(row) > 2 and row[2] else None
-    return None
-    """
+
     return db.reference("Users").child(username).child("Credentials").child('LinkedIn').get()
 
 def save_twitter_token(username, token, token_secret):
