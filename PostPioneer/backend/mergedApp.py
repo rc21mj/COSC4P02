@@ -315,6 +315,7 @@ def submit():
     if not (tone and topic and schedule and edit and userid and language):
         return jsonify({"error": "Missing fields"}), 400
     data = generatePostText(tone,topic,language);
+
     ref = db.reference("Users").child(userid).child("UserPosts")
     postID = ref.push({
         "topic": topic,
@@ -323,7 +324,9 @@ def submit():
         "data": "placeholder", #keep placeholder data for now so as to not fill up the database too fast
         "schedule": schedule,
         "language": language,
-        "edit": edit})
+        "edit": edit,
+        "timestamp": datetime.now().isoformat(),
+        "customHashtags": hashtags})
     postID =  postID.key
     
     # Save data to CSV
@@ -338,7 +341,17 @@ def submit():
             writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
 
         writer.writerow([tone, topic, schedule, edit, ""])
+    
+
     base64_image = generatepostImage(tone,topic)
+
+    posts_ref = ref.child(postID).child("Posts")
+    posts_ref.push({
+        "text": data,
+        "image": base64_image,
+        "timestamp": datetime.now().isoformat()
+    })
+
     return jsonify(
         {"message": f"{data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
 
