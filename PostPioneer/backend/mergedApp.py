@@ -67,64 +67,6 @@ TWITTER_AUTH_URL = "https://api.twitter.com/oauth/authenticate"
 TWITTER_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
 TWITTER_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
 
-@app.route('/make_post', methods=['GET', 'POST'])
-def make_post():
-    if 'username' not in session:
-        return redirect(url_for('user_login'))
-    
-    if request.method == 'POST':
-        if 'generate_post' in request.form:
-            platform = request.form.get('platform')
-            tone = request.form.get('tone')
-            topic = request.form.get('topic')
-            
-            # Scrape data based on the topic
-            scraped_data = scrape_data(topic)
-            
-            # Generate the prompt for the LLM
-            prompt = f"Create a post for {platform} in a {tone} tone, using this summarized data: {scraped_data}"
-            
-            return render_template('make_post.html', platform=platform, prompt=prompt)
-        
-        elif 'generate_summary' in request.form:
-            platform = request.form.get('platform')
-            prompt = request.form.get('prompt')
-            
-            # Get the generated post from the LLM
-            generated_post = generate_post_from_llm(prompt)
-            
-            return render_template('make_post.html', platform=platform, generated_post=generated_post)
-        
-        elif 'submit_post' in request.form:
-            platform = request.form.get('platform')
-            generated_post = request.form.get('generated_post')
-            
-            if platform == 'linkedin':
-                access_token = get_linkedin_token(session['username'])
-                if not access_token:
-                    flash('User not authenticated with LinkedIn.')
-                    return redirect(url_for('settings'))
-                try:
-                    result = make_linkedin_post(access_token, generated_post)
-                    flash('Post created successfully on LinkedIn!')
-                except Exception as e:
-                    flash(f"Error posting to LinkedIn: {str(e)}")
-            elif platform == 'twitter':
-                access_token = get_twitter_token(session['username'])
-                access_token_secret = get_twitter_token_secret(session['username'])
-                if not access_token or not access_token_secret:
-                    flash('User not authenticated with Twitter.')
-                    return redirect(url_for('settings'))
-                try:
-                    result = make_twitter_post(access_token, access_token_secret, generated_post)
-                    flash('Post created successfully on Twitter!')
-                except Exception as e:
-                    flash(f"Error posting to Twitter: {str(e)}")
-            
-            return redirect(url_for('dashboard'))
-    
-    return render_template('make_post.html')
-
 
 #################################
 # LinkedIn OAuth & API Routes
