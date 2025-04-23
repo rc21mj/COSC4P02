@@ -499,6 +499,36 @@ def get_analytics():
     ]
     return jsonify(dummy_data)
 
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    uid = request.args.get('uid')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+
+    ref = db.reference("Users").child(uid).child("UserPosts")
+    posts_raw = ref.get() or {}
+
+    scheduled_posts = []
+    for post_id, post_data in posts_raw.items():
+        if isinstance(post_data, dict):
+            scheduled_posts.append({
+                "id": post_id,
+                "platform": post_data.get("platform", ""),
+                "frequency": post_data.get("schedule", ""),
+                "content": post_data.get("data", "")
+            })
+    engagement_data = [
+        {"date": "2025-04-20", "likes": 20, "comments": 5},
+        {"date": "2025-04-21", "likes": 35, "comments": 8},
+    ]
+    total_engagement = sum(item["likes"] + item["comments"] for item in engagement_data)
+
+    return jsonify({
+        "scheduledPosts": scheduled_posts,
+        "engagementData": engagement_data,
+        "totalEngagement": total_engagement
+    })
+
 # START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
 def pause_scheduling():
     return jsonify({"message": "Scheduling paused."}), 200
