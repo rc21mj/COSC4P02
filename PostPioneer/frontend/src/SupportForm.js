@@ -18,11 +18,7 @@ function SupportForm() {
           {/* Intro Text */}
           <p className="text-gray-600 mb-4 text-center leading-relaxed">
             We typically respond within 24 hours. For immediate assistance,
-            please check out our{" "}
-            <a href="/faq" className="text-blue-600 underline">
-              FAQ
-            </a>{" "}
-            or email us at{" "}
+            please email us at: {" "}
             <a
               href="mailto:support@postpioneer.com"
               className="text-blue-600 underline"
