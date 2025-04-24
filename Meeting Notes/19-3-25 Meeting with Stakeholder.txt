@@ -1,0 +1,8 @@
+19/3/25 - Meeting with Stakeholder
+	- one time posting functionality needs to be worked on.
+	- custom image or no image posting should be added.
+	- dashboard for post editing is required for users.
+	- automated testing needed for all the code being written, i.e. pytest or unittest.
+	- need documentation of the product.
+	- final product should be user friendly and functional, focused on the end user. 
+ 

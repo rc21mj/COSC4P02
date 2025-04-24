@@ -1,0 +1,4 @@
+20/2/25
+	- UI design work, multiple platform integration. 
+	- working on database requests being integrated with the backend logic
+		- integration of payment API calls, LLM API calls, and backend code

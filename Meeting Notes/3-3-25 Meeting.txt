@@ -1,0 +1,5 @@
+3/3/25 - End of Sprint 3
+	Sprint Retrospective: We were able to avoid doing unnecessary work, but the addition of DeepSeek into our workflow requires work to replace the API integration. 
+	Sprint Review: Now on schedule, for the most part. Tasks on tracks for completion according to schedule. 
+	- Linkedin API integration work being done. 
+	- Further implementation of payment system using GPay. 

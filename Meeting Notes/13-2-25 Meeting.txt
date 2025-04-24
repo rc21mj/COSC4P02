@@ -1,0 +1,5 @@
+13/2/25
+	- working on front end
+		- react functionality, focus on making it work properly with Flask
+		- continuing to fix the issues involving Fiber instead of React 
+	- backend implementation continues, focusing on making calling to API and processing response

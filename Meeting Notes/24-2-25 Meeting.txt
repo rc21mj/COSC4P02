@@ -1,0 +1,4 @@
+24/2/25
+	- discussing switch to Ollama
+		- allows for local model (DeepSeek) to be used instead of making API calls to OpenAI
+	- frontend and payment (GooglePay and Stripe) continuation

@@ -1,0 +1,5 @@
+27/2/25
+	- Issues with Ollama integration, requiring space and resources
+		- need to be solved for all members to be able to contribute without issue. 
+	- Front end aesthetic changes to be made. 
+		- React UI updated further. 

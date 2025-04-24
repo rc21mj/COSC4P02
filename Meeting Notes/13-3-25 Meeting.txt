@@ -1,0 +1,4 @@
+13/3/25
+	- Dashboard page for post editing/analytics necessary, needs to be worked on. 
+	- Home page requires sample post information to show what the website is capable of. 
+		- Needs to be generated using our local models and StableDiffusion and put on the home page. 
