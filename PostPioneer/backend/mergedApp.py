@@ -4,6 +4,7 @@ import string
 import hashlib
 import stripe
 import base64
+import time
 import requests
 import csv
 from flask import Flask, redirect, request, session, url_for, render_template, jsonify, flash, json
@@ -44,7 +45,7 @@ CORS(app)  # Allow requests from React frontend
 scheduler = APScheduler()
 scheduler.init_app(app)
 
-app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
+app.secret_key = os.getenv('app.secret_key', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
 cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
 
@@ -139,30 +140,39 @@ def twitter_login():
         callback_uri=TWITTER_REDIRECT_URI
     )
     fetch_response = oauth.fetch_request_token(TWITTER_REQUEST_TOKEN_URL)
-    oauth_token = fetch_response['oauth_token']
-    session['twitter_oauth_token'] = oauth_token
-    auth_url = f"{TWITTER_AUTH_URL}?oauth_token={oauth_token}"
+    session["resource_owner_key"]    = fetch_response["oauth_token"]
+    session["resource_owner_secret"] = fetch_response["oauth_token_secret"]
+    auth_url = f"{TWITTER_AUTH_URL}?oauth_token={fetch_response['oauth_token']}"
     return redirect(auth_url)
 
 @app.route('/twitter_callback')
 def twitter_callback():
-    oauth_token = request.args.get('oauth_token')
+    user_id = request.args.get('user_id')
     oauth_verifier = request.args.get('oauth_verifier')
+    resource_owner_key = session.get("resource_owner_key")
+    resource_owner_secret = session.get("resource_owner_secret")
+    if not oauth_verifier:
+        return "Missing oauth_verifier in callback!", 400
+    if not resource_owner_key:
+        return "Missing request token in session", 400
+    if not resource_owner_secret:  
+        return "Missing request token secret in session", 400
 
     oauth = OAuth1Session(
         client_key=TWITTER_CONSUMER_KEY,
         client_secret=TWITTER_CONSUMER_SECRET,
-        resource_owner_key=oauth_token,
+        resource_owner_key=resource_owner_key,
+        resource_owner_secret=resource_owner_secret,    
         verifier=oauth_verifier
     )
-    access_token_response = oauth.fetch_access_token(TWITTER_ACCESS_TOKEN_URL)
+    access_token_response = oauth.fetch_access_token("https://api.x.com/oauth/access_token")
 
-    auth_token = access_token_response['oauth_token']
-    auth_token_secret = access_token_response['oauth_token_secret']
-    session['twitter_token'] = auth_token
-    session['twitter_token_secret'] = auth_token_secret
-    save_twitter_token(session['username'], auth_token, auth_token_secret)
-    return redirect('http://localhost:3000/settings')
+    session['access_token'] = access_token_response['oauth_token']
+    session['access_token_secret'] = access_token_response['oauth_token_secret']
+
+    save_twitter_token(user_id, session['access_token'], session['access_token_secret'])
+
+    return redirect('/http://localhost:3000/settings')
 
 @app.route('/remove_twitter')
 def remove_twitter():
@@ -222,23 +232,34 @@ def get_twitter_token_secret(username):
 
     return db.reference("Users").child(username).child("Credentials").child('TwitterTokenSecret').get()
 
-def make_twitter_post(token, token_secret, post):
+@app.route('/2/tweets', methods=["POST"])
+def get_tweet():
+    tweet = request.json.get('post')
+    print(f"Received tweet: {tweet}")
+
+    # Retrieve the OAuth tokens from the database
+    ref = db.reference("Users").child("userid").child("UserTokens")
+    tokens = ref.order_by_key().limit_to_last(1).get()
+    for key, value in tokens.items():
+        auth_token = value['xToken']
+        auth_token_secret = value['xTokenSecret']
+
     oauth = OAuth1Session(
         client_key=TWITTER_CONSUMER_KEY,
         client_secret=TWITTER_CONSUMER_SECRET,
-        resource_owner_key=token,
-        resource_owner_secret=token_secret
+        resource_owner_key=auth_token,
+        resource_owner_secret=auth_token_secret
     )
 
     response = oauth.post(
-        "https://api.twitter.com/2/tweets",
-        json={"text": post}
+        "https://api.x.com/2/tweets",
+        json={"text": tweet}
     )
 
     if response.status_code == 201:
-        return {"message": "Tweet successfully posted!"}
+        return jsonify({"message": "Tweet successfully posted!"})
     else:
-        raise Exception(f"Failed to post tweet: {response.text}")
+        return jsonify({"message": f"Failed to post tweet: {response.text}"}), response.status_code
 
 #################################
 # Preference Form Logic
@@ -473,6 +494,84 @@ def dashboard_data():
         "engagementData": engagement_data,
         "totalEngagement": total_engagement
     })
+
+@app.route("/2/tweets/publicMetrics", methods=["GET"])
+def engagement_rate():
+    # 1) pull tokens from your DB/session
+    token, secret = getOauthToken()  
+    oauth = OAuth1Session(
+      TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+      resource_owner_key=token,
+      resource_owner_secret=secret
+    )
+
+    # 2) compute rate
+    rate = publicMetric(oauth, days=7)
+    return jsonify(rate=rate)
+
+
+def publicMetric(oauth, days=7):
+    token, secret = getOauthToken()
+    
+    oauth = OAuth1Session(
+        client_key=TWITTER_CONSUMER_KEY,
+        client_secret=TWITTER_CONSUMER_SECRET,
+        resource_owner_key=token,
+        resource_owner_secret=secret
+    )
+
+    # 2) who am I?
+    me = oauth.get("https://api.x.com/2/users/me",
+                   params={"user.fields":"username"})
+    me.raise_for_status()
+    username = me.json()["data"]["username"]
+
+    # 3) resolve to numeric ID
+    u = oauth.get(f"https://api.x.com/2/users/by/username/{username}")
+    u.raise_for_status()
+    user_id = u.json()["data"]["id"]
+
+    
+    tweets_resp = safe_get(
+        oauth,
+        f"https://api.x.com/2/users/{user_id}/tweets",
+        params={
+            "max_results": 10,
+            "tweet.fields": "public_metrics",
+        }
+    )
+    tweets_resp.raise_for_status()
+    tweets = tweets_resp.json().get("data", [])
+
+    # 5) pull out each tweet’s public_metrics
+    metrics = [t["public_metrics"] for t in tweets]
+
+    return jsonify(metrics=metrics)
+
+def safe_get(oauth, url, params):
+    resp = oauth.get(url, params=params)
+    remaining = int(resp.headers.get("x-rate-limit-remaining", 0))
+
+    if remaining <= 0:
+        reset_ts = int(resp.headers.get("x-rate-limit-reset", 0))
+        wait = max(0, reset_ts - time.time())
+        raise RuntimeError(f"Rate limit hit—retry after {wait:.0f}s")
+
+    resp.raise_for_status()
+    return resp
+
+def getOauthToken(userid):
+    # pull from your Firebase/DB exactly as you had it
+    ref = db.reference("Users").child("userid").child("UserTokens")
+    tokens = ref.order_by_key().limit_to_last(1).get()
+    for key, v in tokens.items():
+        print("🔥 DEBUG -- token record:", v)
+        # don’t crash here — return something so your app doesn’t 500
+        return (
+          v.get("TwitterToken")      or v.get("xToken")      or None,
+          v.get("TwitterTokenSecret") or v.get("xTokenSecret") or None
+        )
+    return None, None
 
 # START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
 def pause_scheduling():
