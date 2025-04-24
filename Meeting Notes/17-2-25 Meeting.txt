@@ -1,0 +1,6 @@
+17/2/25 - End of Sprint 2
+	Sprint Retrospective: 
+		- Still running a little behind schedule. Making more significant progress as time goes on. 
+	Sprint Review: 
+		- Good progress on front end, React and html files working together to create a functional MVP. 
+		- Back end works on calling ChatGPT before processing it into the form of a social media post, which can be specifically tailored towards certain social media platforms. 

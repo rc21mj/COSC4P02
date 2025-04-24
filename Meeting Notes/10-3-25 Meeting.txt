@@ -1,0 +1,4 @@
+10/3/25
+	- Prompt engineering/tweaking to change interaction with DeepSeek and TinyLlama. 
+	- Continuing to make changes to front end aesthetic. 
+	- Front end post submission page supplemented by post editing page. 

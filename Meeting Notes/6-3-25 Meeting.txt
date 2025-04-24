@@ -1,0 +1,4 @@
+6/3/25
+	- webscraper added, integration with local LLM in progress. 
+	- User login using email and password in progress
+		- account creation and storage using firebase. 
