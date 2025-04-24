@@ -5,7 +5,7 @@ import firebaseConfig from './firebaseConfig';
 import {useNavigate } from "react-router-dom";
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
-}
+
 const MakeAPost = () => {
 
   const [formData, setFormData] = useState({
@@ -186,7 +186,7 @@ return (
         {/* Custom Image Toggle */}
         <div>
           <label htmlFor="customImageOption" className="block text-base font-medium text-[#1E1E1E] mb-2">
-            Add Custom Image:
+            Add Image:
           </label>
           <select
             id="customImageOption"

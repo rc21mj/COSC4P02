@@ -47,7 +47,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('app.secret_key', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
+cred = credentials.Certificate("credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -414,8 +414,8 @@ def hourly_trigger():
                         print("Image generated")
 
                         # Save to Firebase
-                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
-                        post_result_ref.push({
+                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id)
+                        post_result_ref.set({
                             "timestamp": current_time.isoformat(),
                             "text": generated_text,
                             "image": image_url
@@ -578,14 +578,31 @@ def getOauthToken(userid):
         )
     return None, None
 
-# START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
-def pause_scheduling():
-    return jsonify({"message": "Scheduling paused."}), 200
+# START OF DASHBOARD SCHEDLUING API #
+@app.route('/api/cancel-scheduler')
 def cancel_scheduling():
+    uid = request.args.get('uid')
+    postid = request.args.get('postid')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+    if not postid:
+        return jsonify({"error": "Missing PostID"}), 400
+    db.reference("Users").child(uid).child("UserPosts").child(postid).delete()
     return jsonify({"message": "Scheduling cancelled."}), 200
+@app.route('/api/change-scheduler')
 def change_scheduling():
+    uid = request.args.get('uid')
+    postid = request.args.get('postid')
+    schedule = request.args.get('schedule')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+    if not postid:
+        return jsonify({"error": "Missing PostID"}), 400
+    if not schedule:
+        return jsonify({"error": "Missing Schedule"}), 400
+    db.reference("Users").child(uid).child("UserPosts").child(postid).update({'schedule': schedule})
     return jsonify({"message": "Scheduling changed."}), 200
-# END OF DASHBOARD SCHEDULING PLACEHOLDERS #
+# END OF DASHBOARD SCHEDULING API #
 
 
 
