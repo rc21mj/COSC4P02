@@ -1,9 +1,14 @@
 Flask
+flask_apscheduler
+flask_cors
 requests
 python-dotenv
 transformers
 torch
-firebaseadmin
+firebase_admin
 ollama
 diffusers
+random
+string
+hashlib
 

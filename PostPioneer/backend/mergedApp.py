@@ -354,10 +354,6 @@ def generateTranslation(language):
 # Scheduler Logic (When Twitter posting is unbanned replace the print statements with the actual posting code)
 #################################
 
-@scheduler.task('interval', id='job_2', seconds=15)
-def test_scheduler():
-    print("This job runs every 15 seconds to show scheduling is working!")
-
 @scheduler.task('cron', id='job_2', hour='*', minute='0')
 def hourly_trigger():
     print("This job runs every hour!")
