@@ -5,7 +5,7 @@ import firebaseConfig from './firebaseConfig';
 import {useNavigate } from "react-router-dom";
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
-
+}
 const MakeAPost = () => {
 
   const [formData, setFormData] = useState({

@@ -392,34 +392,33 @@ def hourly_trigger():
                 for post_id, post_data in user_data["UserPosts"].items(): 
                     if "schedule" in post_data:
                         should_post = False
+                        if post_data["schedule"] == "hourly":
+                            should_post = True
+                        elif post_data["schedule"] == "daily" and current_time.hour == 0:
+                            should_post = True
+                        elif post_data["schedule"] == "weekly" and current_time.weekday() == 0 and current_time.hour == 0:
+                            should_post = True
+                        elif post_data["schedule"] == "biweekly" and current_time.weekday() == 0 and current_time.hour == 0 and current_time.day % 14 == 0:
+                            should_post = True
+                        elif post_data["schedule"] == "monthly" and current_time.day == 1 and current_time.hour == 0:
+                            should_post = True
 
-                    if post_data["schedule"] == "hourly":
-                        should_post = True
-                    elif post_data["schedule"] == "daily" and current_time.hour == 0:
-                        should_post = True
-                    elif post_data["schedule"] == "weekly" and current_time.weekday() == 0 and current_time.hour == 0:
-                        should_post = True
-                    elif post_data["schedule"] == "biweekly" and current_time.weekday() == 0 and current_time.hour == 0 and current_time.day % 14 == 0:
-                        should_post = True
-                    elif post_data["schedule"] == "monthly" and current_time.day == 1 and current_time.hour == 0:
-                        should_post = True
+                        if should_post:
+                            print(f"{post_data['schedule'].capitalize()} post")
 
-                    if should_post:
-                        print(f"{post_data['schedule'].capitalize()} post")
+                            generated_text = generatePostText(post_data["tone"], post_data["topic"], post_data["language"], post_data["customHashtags"])
+                            print(generated_text)
 
-                        generated_text = generatePostText(post_data["tone"], post_data["topic"], post_data["language"], post_data["customHashtags"])
-                        print(generated_text)
+                            image_url = generatepostImage(post_data["tone"], post_data["topic"])  # <-- modify this to return a URL
+                            print("Image generated")
 
-                        image_url = generatepostImage(post_data["tone"], post_data["topic"])  # <-- modify this to return a URL
-                        print("Image generated")
-
-                        # Save to Firebase
-                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id)
-                        post_result_ref.set({
-                            "timestamp": current_time.isoformat(),
-                            "text": generated_text,
-                            "image": image_url
-                        })
+                            # Save to Firebase
+                            post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id)
+                            post_result_ref.set({
+                                "timestamp": current_time.isoformat(),
+                                "text": generated_text,
+                                "image": image_url
+                            })
             else:
                 print("  No UserPosts found.")
     else:

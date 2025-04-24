@@ -105,12 +105,35 @@ export default function Dashboard() {
   };
 
   const handleDelete = (postId) => {
-    setScheduledPosts(posts => posts.filter(post => post.id !== postId));
+    const uid = formData.userid;
+    if (uid === "guest") return;
+  
+    fetch(`http://localhost:5000/api/cancel-scheduler?uid=${uid}&postid=${postId}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.message);
+        setScheduledPosts(posts => posts.filter(post => post.id !== postId));
+      })
+      .catch(err => console.error("Failed to cancel scheduling:", err));
   };
+  
 
   const handleFrequencyChange = () => {
-    setEditDialogOpen(false);
-    // Add actual update logic here
+    const uid = formData.userid;
+    const post = editingPost;
+  
+    if (uid === "guest" || !post) return;
+  
+    fetch(`http://localhost:5000/api/change-scheduler?uid=${uid}&postid=${post.id}&schedule=${post.frequency}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.message);
+        setScheduledPosts(posts =>
+          posts.map(p => p.id === post.id ? { ...p, frequency: post.frequency } : p)
+        );
+        setEditDialogOpen(false);
+      })
+      .catch(err => console.error("Failed to change schedule:", err));
   };
 
   const handleRedirect = async (postId) => {
