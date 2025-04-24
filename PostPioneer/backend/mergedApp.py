@@ -575,14 +575,31 @@ def getOauthToken(userid):
         )
     return None, None
 
-# START OF DASHBOARD SCHEDLUING PLACEHOLDERS #
-def pause_scheduling():
-    return jsonify({"message": "Scheduling paused."}), 200
+# START OF DASHBOARD SCHEDLUING API #
+@app.route('/api/cancel-scheduler')
 def cancel_scheduling():
+    uid = request.args.get('uid')
+    postid = request.args.get('postid')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+    if not postid:
+        return jsonify({"error": "Missing PostID"}), 400
+    db.reference("Users").child(uid).child("UserPosts").child(postid).delete()
     return jsonify({"message": "Scheduling cancelled."}), 200
+@app.route('/api/change-scheduler')
 def change_scheduling():
+    uid = request.args.get('uid')
+    postid = request.args.get('postid')
+    schedule = request.args.get('schedule')
+    if not uid:
+        return jsonify({"error": "Missing UID"}), 400
+    if not postid:
+        return jsonify({"error": "Missing PostID"}), 400
+    if not schedule:
+        return jsonify({"error": "Missing Schedule"}), 400
+    db.reference("Users").child(uid).child("UserPosts").child(postid).update({'schedule': schedule})
     return jsonify({"message": "Scheduling changed."}), 200
-# END OF DASHBOARD SCHEDULING PLACEHOLDERS #
+# END OF DASHBOARD SCHEDULING API #
 
 
 
