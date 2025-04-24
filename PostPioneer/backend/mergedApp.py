@@ -252,8 +252,8 @@ def submit():
     language = data.get("language")
     userid = data.get("userid")
     hashtags = data.get("customHashtags")
-    custom_image_option = data.get("customImageOption")  # New field to handle image option
-    uploaded_image = data.get("uploadedImage")  # Base64 string if an image is uploaded
+    custom_image_option = data.get("customImageOption") 
+    uploaded_image = data.get("uploadedImage")
 
     current_time = datetime.now()
 
@@ -435,7 +435,9 @@ def hil_submit():
 
     generated_post = data.get('generated_post')
     access_token = get_linkedin_token(data.get('userid'))
-    make_linkedin_post(access_token, generated_post)
+    image = data.get('user_image')
+    print("new")
+    make_linkedin_post(access_token, generated_post, image)
     return jsonify({"All good": "Good"}), 200
 
 #################################

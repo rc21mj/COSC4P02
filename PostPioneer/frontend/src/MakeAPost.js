@@ -64,8 +64,13 @@ const MakeAPost = () => {
       //setMessage(response.data.message);
       //setImage(response.data.image);
       const generatedText = response.data.message;
-      const generatedImage = response.data.image;
+      //const generatedImage = response.data.image;
+      let generatedImage = response.data.image;
 
+    // Use uploaded image if "upload" is selected
+      if (formData.customImageOption === "upload") {
+        generatedImage = formData.customImageBase64; // Use uploaded image
+      }
       // Navigate to EditPost with generated data
       navigate("/editPosting", { state: { text: generatedText, image: generatedImage } });
     } catch (error) {

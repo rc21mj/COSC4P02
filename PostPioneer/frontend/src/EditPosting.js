@@ -40,7 +40,8 @@ const EditPost = () => {
         try {
             const response = await axios.post("http://localhost:5000/hil_submit", {
                 userid: formData.userid,
-                generated_post: formData.text
+                generated_post: formData.text,
+                user_image: image
             });
             if (response.status === 200) {
                 navigate('/post_generation'); // Redirect to dashboard after successful post
