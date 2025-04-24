@@ -63,10 +63,9 @@ LINKEDIN_SCOPE = "openid profile email w_member_social"
 # Twitter OAuth Configuration
 TWITTER_CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
 TWITTER_CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
-TWITTER_REDIRECT_URI = os.getenv('TWITTER_REDIRECT_URI')
-TWITTER_AUTH_URL = "https://api.twitter.com/oauth/authenticate"
-TWITTER_REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token"
-TWITTER_ACCESS_TOKEN_URL = "https://api.twitter.com/oauth/access_token"
+TWITTER_AUTH_URL = "https://api.x.com/oauth/authenticate"
+TWITTER_REQUEST_TOKEN_URL = "https://api.x.com/oauth/request_token"
+TWITTER_ACCESS_TOKEN_URL = "https://api.x.com/oauth/access_token"
 
 
 #################################
@@ -137,9 +136,11 @@ def twitter_login():
     oauth = OAuth1Session(
         client_key=TWITTER_CONSUMER_KEY,
         client_secret=TWITTER_CONSUMER_SECRET,
-        callback_uri=TWITTER_REDIRECT_URI
+        callback_uri="http://localhost:5000/twitter_callback"
     )
+    print("hi")
     fetch_response = oauth.fetch_request_token(TWITTER_REQUEST_TOKEN_URL)
+    print(fetch_response)
     session["resource_owner_key"]    = fetch_response["oauth_token"]
     session["resource_owner_secret"] = fetch_response["oauth_token_secret"]
     auth_url = f"{TWITTER_AUTH_URL}?oauth_token={fetch_response['oauth_token']}"
@@ -147,7 +148,9 @@ def twitter_login():
 
 @app.route('/twitter_callback')
 def twitter_callback():
-    user_id = request.args.get('user_id')
+    user_id = session.get('username')
+    if not user_id:
+        return "userid", 400
     oauth_verifier = request.args.get('oauth_verifier')
     resource_owner_key = session.get("resource_owner_key")
     resource_owner_secret = session.get("resource_owner_secret")
@@ -172,11 +175,11 @@ def twitter_callback():
 
     save_twitter_token(user_id, session['access_token'], session['access_token_secret'])
 
-    return redirect('/http://localhost:3000/settings')
+    return redirect('http://localhost:3000/settings')
 
 @app.route('/remove_twitter')
 def remove_twitter():
-    user_id = request.args.get('user_id')
+    user_id = session.get('user_id')
     db.reference("Users").child(user_id).child("Credentials").update({'TwitterToken' : None,
                                                                        'TwitterTokenSecret' : None})
     return redirect('http://localhost:3000/settings')
@@ -290,7 +293,7 @@ def submit():
     postID = ref.push({
         "topic": topic,
         "tone": tone,
-        "data": "placeholder",  # Placeholder to avoid filling up the database too fast
+        "data": post_text,  # Placeholder to avoid filling up the database too fast
         "schedule": schedule,
         "language": language,
         "edit": "true",
@@ -308,15 +311,15 @@ def submit():
         base64_image = uploaded_image  # Use the uploaded image (Base64 string)
 
     # Save post data
-    posts_ref = ref.child(postID).child("Posts")
+    posts_ref = ref.child(postID)
     post_data = {
-        "text": post_text,
+        "image": base64_image,
         "timestamp": current_time.isoformat()
     }
     if base64_image:
         post_data["image"] = base64_image
 
-    posts_ref.push(post_data)
+    posts_ref.update(post_data)
 
     # Return response
     response = {
@@ -567,7 +570,7 @@ def getOauthToken(userid):
     ref = db.reference("Users").child("userid").child("UserTokens")
     tokens = ref.order_by_key().limit_to_last(1).get()
     for key, v in tokens.items():
-        print("🔥 DEBUG -- token record:", v)
+        print("DEBUG -- token record:", v)
         # don’t crash here — return something so your app doesn’t 500
         return (
           v.get("TwitterToken")      or v.get("xToken")      or None,

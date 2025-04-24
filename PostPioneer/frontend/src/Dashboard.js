@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import firebase from 'firebase/compat/app';
 import firebaseConfig from './firebaseConfig';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -54,6 +55,7 @@ const dummyTotalEngagement = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate(); // Initialize navigate
   const [formData, setFormData] = useState({
     userid: "guest",
     // ... other fields
@@ -111,6 +113,18 @@ export default function Dashboard() {
     // Add actual update logic here
   };
 
+  const handleRedirect = async (postId) => {
+    //db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
+    try {
+      const response = await fetch(`http://localhost:5000/api/get-post-details?postid=${postId}&userid=${formData.userid}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const { text, image } = await response.json();
+      navigate("/editPosting", { state: { text, image } });
+    } catch (error) {
+      console.error('Error fetching post details:', error);
+    }
+  };
+
   const getEngagementData = () => {
     switch (engagementView) {
       case 'weekly':
@@ -145,12 +159,26 @@ export default function Dashboard() {
                     <TableCell>{post.content}</TableCell>
                     <TableCell>{post.frequency}</TableCell>
                     <TableCell>
-                      <IconButton size="small" onClick={() => handleEdit(post)}> {/* Smaller buttons */}
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton size="small" onClick={() => handleDelete(post.id)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div>
+                          <IconButton size="small" onClick={() => handleEdit(post)}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <span style={{ fontSize: '0.75rem' }}>Edit Frequency</span>
+                        </div>
+                        <div>
+                          <IconButton size="small" onClick={() => handleDelete(post.id)}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                          <span style={{ fontSize: '0.75rem' }}>Delete</span>
+                        </div>
+                        <div>
+                          <IconButton size="small" onClick={() => handleRedirect(post.id)}>
+                            <EditIcon fontSize="small" /> {/* Replace with a suitable icon */}
+                          </IconButton>
+                          <span style={{ fontSize: '0.75rem' }}>Edit Post</span>
+                        </div>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
