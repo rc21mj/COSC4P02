@@ -14,7 +14,7 @@ from linkedinAPI import make_linkedin_post, generate_state
 from webScraper import scrape_data, generate_post_from_llm
 from requests_oauthlib import OAuth1Session
 import firebase_admin
-import datetime
+from datetime import datetime
 from firebase_admin import credentials
 from firebase_admin import db
 from firebase_admin import auth
@@ -46,7 +46,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("credentials.json")
+cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -249,53 +249,63 @@ def submit():
     tone = data.get("tone")
     topic = data.get("topic")
     schedule = data.get("schedule")
-    edit = data.get("edit")
     language = data.get("language")
     userid = data.get("userid")
     hashtags = data.get("customHashtags")
-    print(userid)
-    if not (tone and topic and schedule and edit and userid and language):
-        return jsonify({"error": "Missing fields"}), 400
-    data = generatePostText(tone,topic,language);
+    custom_image_option = data.get("customImageOption")  # New field to handle image option
+    uploaded_image = data.get("uploadedImage")  # Base64 string if an image is uploaded
 
+    current_time = datetime.now()
+
+    print(userid)
+    if not (tone and topic and schedule and userid and language):
+        return jsonify({"error": "Missing fields"}), 400
+
+    # Generate post text
+    post_text = generatePostText(tone, topic, language)
+
+    # Initialize Firebase reference
     ref = db.reference("Users").child(userid).child("UserPosts")
     postID = ref.push({
         "topic": topic,
         "tone": tone,
-        #"data": data,
-        "data": "placeholder", #keep placeholder data for now so as to not fill up the database too fast
+        "data": "placeholder",  # Placeholder to avoid filling up the database too fast
         "schedule": schedule,
         "language": language,
-        "edit": edit,
-        "timestamp": datetime.now().isoformat(),
-        "customHashtags": hashtags})
-    postID =  postID.key
-    
-    # Save data to CSV
-    file_exists = os.path.exists(CSV_FILE)
-
-
-    with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-
-        # Write header if file is new
-        if not file_exists:
-            writer.writerow(["Tone", "Topic", "Schedule", "Edit", "Generated_Post"])
-
-        writer.writerow([tone, topic, schedule, edit, ""])
-    
-
-    base64_image = generatepostImage(tone,topic)
-
-    posts_ref = ref.child(postID).child("Posts")
-    posts_ref.push({
-        "text": data,
-        "image": base64_image,
-        "timestamp": datetime.now().isoformat()
+        "edit": "true",
+        "timestamp": current_time.isoformat(),
+        "customHashtags": hashtags
     })
+    postID = postID.key
+    print(f"Post ID: {postID}")
 
-    return jsonify(
-        {"message": f"{data}", "image": f"data:image/png;base64,{base64_image}", "postID": postID}), 200
+    # Handle image based on the selected option
+    base64_image = None
+    if custom_image_option == "generate":
+        base64_image = generatepostImage(tone, topic)
+    elif custom_image_option == "upload" and uploaded_image:
+        base64_image = uploaded_image  # Use the uploaded image (Base64 string)
+
+    # Save post data
+    posts_ref = ref.child(postID).child("Posts")
+    post_data = {
+        "text": post_text,
+        "timestamp": current_time.isoformat()
+    }
+    if base64_image:
+        post_data["image"] = base64_image
+
+    posts_ref.push(post_data)
+
+    # Return response
+    response = {
+        "message": post_text,
+        "postID": postID
+    }
+    if base64_image:
+        response["image"] = f"data:image/png;base64,{base64_image}"
+
+    return jsonify(response), 200
 
 #################################
 # Post Generation Logic
@@ -383,7 +393,7 @@ def hourly_trigger():
                         image_url = generatepostImage(post_data["tone"], post_data["topic"])  # <-- modify this to return a URL
                         print("Image generated")
 
-                        # 🔥 Save to Firebase
+                        # Save to Firebase
                         post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
                         post_result_ref.push({
                             "timestamp": current_time.isoformat(),
@@ -435,16 +445,9 @@ def hil_submit():
 #################################
 # Dashboard Logic
 #################################
-@app.route("/linkedin-analytics")
-def get_analytics():
-    dummy_data = [
-        {"date": "2024-04-01", "impressions": 120, "clicks": 30},
-        {"date": "2024-04-02", "impressions": 200, "clicks": 50},
-        {"date": "2024-04-03", "impressions": 180, "clicks": 45},
-        {"date": "2024-04-04", "impressions": 220, "clicks": 60},
-    ]
-    return jsonify(dummy_data)
 
+
+#If linkedin allowed analytics
 @app.route('/api/dashboard-data')
 def dashboard_data():
     uid = request.args.get('uid')

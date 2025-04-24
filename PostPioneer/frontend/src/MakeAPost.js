@@ -13,9 +13,11 @@ const MakeAPost = () => {
     topic: "dancing",
     schedule: "daily",
     edit: "false",
-    language: "english",
+    language: "English",
     customHashtags: "",
-    userid: "failedSet"
+    userid: "failedSet",
+    customImageOption: "none", // New field for image option
+    customImageBase64: "" // Field for uploaded image (if applicable)
   });
   const navigate = useNavigate();
   //set userID
@@ -30,7 +32,6 @@ const MakeAPost = () => {
   const [message, setMessage] = useState("");
   const [image, setImage] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-  const [customImageEnabled, setCustomImageEnabled] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadingDots, setLoadingDots] = useState(".");
   const handleChange = (e) => {
@@ -132,12 +133,11 @@ return (
             onChange={handleChange}
             className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
           >
-            <option value="sports">Sports</option>
-            <option value="dancing">Dancing</option>
-            <option value="elephant">Elephant</option>
-            <option value="soul">Soul</option>
-            <option value="stars">Stars</option>
-            <option value="eggs">Eggs</option>
+             <option value="sports">Sports</option>
+            <option value="news">News</option>
+            <option value="business">Business</option>
+            <option value="arts">Arts</option>
+            <option value="travel">Travel</option>
           </select>
         </div>
 
@@ -161,23 +161,6 @@ return (
           </select>
         </div>
 
-        {/* Review & Edit */}
-        <div>
-          <label htmlFor="edit" className="block text-base font-medium text-[#1E1E1E] mb-2">
-            Review & Edit Post before Posting:
-          </label>
-          <select
-            id="edit"
-            name="edit"
-            value={formData.edit}
-            onChange={handleChange}
-            className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
-          >
-            <option value="false">false</option>
-            <option value="true">true</option>
-          </select>
-        </div>
-
         {/* Language */}
         <div>
           <label htmlFor="language" className="block text-base font-medium text-[#1E1E1E] mb-2">
@@ -197,22 +180,23 @@ return (
 
         {/* Custom Image Toggle */}
         <div>
-          <label htmlFor="customImageEnabled" className="block text-base font-medium text-[#1E1E1E] mb-2">
+          <label htmlFor="customImageOption" className="block text-base font-medium text-[#1E1E1E] mb-2">
             Add Custom Image:
           </label>
           <select
-            id="customImageEnabled"
-            name="customImageEnabled"
-            value={customImageEnabled ? "true" : "false"}
-            onChange={(e) => setCustomImageEnabled(e.target.value === "true")}
+            id="customImageOption"
+            name="customImageOption"
+            value={formData.customImageOption}
+            onChange={handleChange}
             className="block w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-[#00B4D8] focus:border-transparent"
           >
-            <option value="false">false</option>
-            <option value="true">true</option>
+            <option value="none">None</option>
+            <option value="upload">Upload</option>
+            <option value="generate">Generate</option>
           </select>
         </div>
 
-        {customImageEnabled && (
+        {formData.customImageOption === "upload" && (
           <div>
             <input
               type="file"
@@ -223,6 +207,13 @@ return (
                          file:bg-[#E2E4E6] file:text-[#1E1E1E]
                          hover:file:bg-[#D1D4D6]"
             />
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="mt-4 w-full max-h-64 object-contain rounded-md"
+              />
+            )}
           </div>
         )}
 
@@ -249,7 +240,7 @@ return (
             //disabled={isSubmitting}
             className="w-full py-3 bg-[#00B4D8] text-white font-poppins font-semibold rounded-md hover:bg-[#0099C1] transition"
           >
-            {isSubmitting ? `Generating post${loadingDots}` : "Submit Preferences"}
+            {isSubmitting ? `Generating post${loadingDots}` : "Submit"}
           </button>
         </div>
 

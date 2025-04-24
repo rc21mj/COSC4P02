@@ -46,37 +46,44 @@ function Layout1({ children }) {
             <li>
               <Link to="/">Home</Link>
             </li>
-            <li>
-              <Link to="/dashboard">Dashboard</Link>
-            </li>
-            {user ? (
-              <li>
-                <Link to="/post_generation">Generate a Post!</Link>
-              </li>
-            ) : null}
-            {user ? (
-              <li>
-                <Link to="/payment">Payment Plan</Link>
-              </li>
-            ) : null}
-            {user ? (
-              <li>
-                <Link to="/settings">Settings</Link>
-              </li>
-            ) : null}
-            {user ? (
-              <li class="signOutButton">
-                <Link
-                  to="/home"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSignOut();
-                  }}
-                >
-                  Sign out
-                </Link>
-              </li>
-            ) : (
+            {!user && (
+              <>
+                <li>
+                  <Link to="/about">About</Link>
+                </li>
+                <li>
+                  <Link to="/how-it-works">How it Works</Link>
+                </li>
+              </>
+            )}
+            {user && (
+              <>
+                <li>
+                  <Link to="/dashboard">Dashboard</Link>
+                </li>
+                <li>
+                  <Link to="/post_generation">Generate a Post!</Link>
+                </li>
+                <li>
+                  <Link to="/payment">Payment Plan</Link>
+                </li>
+                <li>
+                  <Link to="/settings">Settings</Link>
+                </li>
+                <li className="signOutButton">
+                  <Link
+                    to="/home"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSignOut();
+                    }}
+                  >
+                    Sign out
+                  </Link>
+                </li>
+              </>
+            )}
+            {!user && (
               <li>
                 <Link to="/login">User Login</Link>
               </li>

@@ -31,10 +31,24 @@ const dummyEngagementData = [
   { date: '2024-04-04', likes: 75, comments: 25 },
 ];
 
+// Dummy data for weekly engagement
+const dummyWeeklyEngagementData = [
+  { week: '2024-04-01', likes: 320, comments: 85 },
+  { week: '2024-04-07', likes: 400, comments: 120 },
+  { week: '2024-04-014', likes: 450, comments: 150 },
+];
+
+// Dummy data for monthly engagement
+const dummyMonthlyEngagementData = [
+  { month: '2024-03', likes: 1200, comments: 350 },
+  { month: '2024-04', likes: 1500, comments: 450 },
+  { month: '2024-05', likes: 1700, comments: 500 },
+];
+
 // Dummy data for total engagement
 const dummyTotalEngagement = {
-  totalLikes: 240,
-  totalComments: 74,
+  totalLikes: 890,
+  totalComments: 325,
   totalShares: 32,
   engagementRate: '3.2%'
 };
@@ -61,6 +75,7 @@ export default function Dashboard() {
   const [totalEngagement, setTotalEngagement] = useState(dummyTotalEngagement);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState(null);
+  const [engagementView, setEngagementView] = useState('daily'); // Default to daily view
 
   // Example function to fetch real data
   useEffect(() => {
@@ -96,14 +111,25 @@ export default function Dashboard() {
     // Add actual update logic here
   };
 
+  const getEngagementData = () => {
+    switch (engagementView) {
+      case 'weekly':
+        return dummyWeeklyEngagementData;
+      case 'monthly':
+        return dummyMonthlyEngagementData;
+      default:
+        return dummyEngagementData;
+    }
+  };
+
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ padding: '1.5rem' }}> {/* Slightly reduced padding */}
       {/* Scheduled Posts Section */}
-      <Card style={{ marginBottom: '2rem' }}>
-        <CardContent>
-          <h2>Scheduled Posts</h2>
+      <Card style={{ marginBottom: '1.5rem', maxHeight: '300px', overflowY: 'auto' }}> {/* Reduced height */}
+        <CardContent style={{ padding: '1rem' }}> {/* Reduced padding */}
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>Scheduled Posts</h2> {/* Slightly smaller font */}
           <TableContainer component={Paper}>
-            <Table>
+            <Table size="small"> {/* Reduced table size */}
               <TableHead>
                 <TableRow>
                   <TableCell>Post ID</TableCell>
@@ -119,11 +145,11 @@ export default function Dashboard() {
                     <TableCell>{post.content}</TableCell>
                     <TableCell>{post.frequency}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleEdit(post)}>
-                        <EditIcon />
+                      <IconButton size="small" onClick={() => handleEdit(post)}> {/* Smaller buttons */}
+                        <EditIcon fontSize="small" />
                       </IconButton>
-                      <IconButton onClick={() => handleDelete(post.id)}>
-                        <DeleteIcon />
+                      <IconButton size="small" onClick={() => handleDelete(post.id)}>
+                        <DeleteIcon fontSize="small" />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -134,15 +160,42 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}> {/* Reduced gap */}
         {/* Engagement Chart */}
-        <Card>
-          <CardContent>
-            <h2>Post Engagement Over Time</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={engagementData}>
+        <Card style={{ maxHeight: '350px' }}> {/* Reduced height */}
+          <CardContent style={{ padding: '1rem' }}> {/* Reduced padding */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>Post Engagement Over Time</h2> {/* Slightly smaller font */}
+              <div>
+                <Button 
+                  variant={engagementView === 'daily' ? 'contained' : 'outlined'} 
+                  onClick={() => setEngagementView('daily')}
+                  size="small" /* Smaller buttons */
+                  style={{ marginRight: '0.25rem' }} /* Reduced margin */
+                >
+                  Daily
+                </Button>
+                <Button 
+                  variant={engagementView === 'weekly' ? 'contained' : 'outlined'} 
+                  onClick={() => setEngagementView('weekly')}
+                  size="small"
+                  style={{ marginRight: '0.25rem' }}
+                >
+                  Weekly
+                </Button>
+                <Button 
+                  variant={engagementView === 'monthly' ? 'contained' : 'outlined'} 
+                  onClick={() => setEngagementView('monthly')}
+                  size="small"
+                >
+                  Monthly
+                </Button>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={250}> {/* Reduced height */}
+              <LineChart data={getEngagementData()}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
+                <XAxis dataKey={engagementView === 'daily' ? 'date' : engagementView === 'weekly' ? 'week' : 'month'} />
                 <YAxis />
                 <Tooltip />
                 <Legend />
@@ -154,11 +207,11 @@ export default function Dashboard() {
         </Card>
 
         {/* Total Engagement Stats */}
-        <Card>
-          <CardContent>
-            <h2>Total Engagement</h2>
+        <Card style={{ maxHeight: '350px' }}> {/* Reduced height */}
+          <CardContent style={{ padding: '1rem' }}> {/* Reduced padding */}
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>Total Engagement</h2> {/* Slightly smaller font */}
             <TableContainer>
-              <Table>
+              <Table size="small"> {/* Reduced table size */}
                 <TableBody>
                   <TableRow>
                     <TableCell>Total Likes</TableCell>
@@ -185,12 +238,13 @@ export default function Dashboard() {
 
       {/* Edit Frequency Dialog */}
       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
-        <DialogTitle>Edit Post Frequency</DialogTitle>
+        <DialogTitle style={{ fontSize: '1.25rem' }}>Edit Post Frequency</DialogTitle> {/* Slightly smaller font */}
         <DialogContent>
           <Select
             value={editingPost?.frequency || ''}
             onChange={(e) => setEditingPost({...editingPost, frequency: e.target.value})}
             fullWidth
+            size="small" /* Smaller select input */
           >
             <MenuItem value="daily">Daily</MenuItem>
             <MenuItem value="weekly">Weekly</MenuItem>
@@ -198,8 +252,8 @@ export default function Dashboard() {
           </Select>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
-          <Button onClick={handleFrequencyChange} color="primary">Save</Button>
+          <Button onClick={() => setEditDialogOpen(false)} size="small">Cancel</Button> {/* Smaller buttons */}
+          <Button onClick={handleFrequencyChange} color="primary" size="small">Save</Button>
         </DialogActions>
       </Dialog>
     </div>
