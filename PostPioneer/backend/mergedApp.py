@@ -47,7 +47,7 @@ scheduler.init_app(app)
 
 app.secret_key = os.getenv('app.secret_key', 'your_default_secret_key')  # Set a default secret key if not provided in .env
 load_dotenv()
-cred = credentials.Certificate("E:\\COSC4P02\\PostPioneer\\backend\\credentials.json")
+cred = credentials.Certificate("credentials.json")
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://postpioneer-e82d3-default-rtdb.firebaseio.com/'
@@ -411,8 +411,8 @@ def hourly_trigger():
                         print("Image generated")
 
                         # Save to Firebase
-                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
-                        post_result_ref.push({
+                        post_result_ref = db.reference("Users").child(user_id).child("UserPosts").child(post_id)
+                        post_result_ref.set({
                             "timestamp": current_time.isoformat(),
                             "text": generated_text,
                             "image": image_url
