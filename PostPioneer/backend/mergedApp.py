@@ -286,7 +286,7 @@ def submit():
         return jsonify({"error": "Missing fields"}), 400
 
     # Generate post text
-    post_text = generatePostText(tone, topic, language)
+    post_text = generatePostText(tone, topic, language, hashtags)
 
     # Initialize Firebase reference
     ref = db.reference("Users").child(userid).child("UserPosts")
@@ -335,7 +335,7 @@ def submit():
 # Post Generation Logic
 #################################
 
-def generatePostText(tone, topic, language):
+def generatePostText(tone, topic, language, hashtag):
     scraped_text = scrape_data(topic)
     if scraped_text is not None:
         initial_prompt = f"Write a {tone} social media post about {topic} in the {language} language. It must be in {language}. The data is: {scraped_text}"
@@ -347,7 +347,7 @@ def generatePostText(tone, topic, language):
     response= chat(model=model, messages=messages)
     messages.append({"role": "assistant", "content": response['message']['content']})
     print(response['message']['content'])
-    return response['message']['content'].split("</think>",1)[1]
+    return response['message']['content'].split("</think>",1)[1]+hashtag
 
 def generatepostImage(tone, topic):
     initial_prompt = f"Write a stable diffusion prompt about {topic}, the image tone must be {tone}. Provide just the prompt!"
@@ -407,7 +407,7 @@ def hourly_trigger():
                     if should_post:
                         print(f"{post_data['schedule'].capitalize()} post")
 
-                        generated_text = generatePostText(post_data["tone"], post_data["topic"], post_data["language"])
+                        generated_text = generatePostText(post_data["tone"], post_data["topic"], post_data["language"], post_data["customHashtags"])
                         print(generated_text)
 
                         image_url = generatepostImage(post_data["tone"], post_data["topic"])  # <-- modify this to return a URL
