@@ -12,6 +12,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import firebase from 'firebase/compat/app';
 import firebaseConfig from './firebaseConfig';
+import 'firebase/compat/database';
+
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -100,8 +102,6 @@ export default function Dashboard() {
   }, [formData.userid]);
 
   const handleEdit = (post) => {
-    setEditingPost(post);
-    setEditDialogOpen(true);
   };
 
   const handleDelete = (postId) => {
@@ -136,13 +136,24 @@ export default function Dashboard() {
       .catch(err => console.error("Failed to change schedule:", err));
   };
 
-  const handleRedirect = async (postId) => {
-    //db.reference("Users").child(user_id).child("UserPosts").child(post_id).child("Posts")
+  const handleRedirect = async (postId, user_id) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/get-post-details?postid=${postId}&userid=${formData.userid}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const { text, image } = await response.json();
-      navigate("/editPosting", { state: { text, image } });
+      const snapshot = await firebase
+        .database()
+        .ref(`Users/${user_id}/UserPosts/${postId}`)
+        .once('value');
+  
+      const data = snapshot.val();
+  
+      const text = data?.data || '';
+      const image = data?.image || '';
+  
+      navigate("/editPosting", {
+        state: {
+          text,
+          image: image ? `data:image/png;base64,${image}` : ""
+        }
+      });
     } catch (error) {
       console.error('Error fetching post details:', error);
     }
@@ -196,7 +207,7 @@ export default function Dashboard() {
                           <span style={{ fontSize: '0.75rem' }}>Delete</span>
                         </div>
                         <div>
-                          <IconButton size="small" onClick={() => handleRedirect(post.id)}>
+                          <IconButton size="small" onClick={() => handleRedirect(post.id, formData.userid)}>
                             <EditIcon fontSize="small" /> {/* Replace with a suitable icon */}
                           </IconButton>
                           <span style={{ fontSize: '0.75rem' }}>Edit Post</span>

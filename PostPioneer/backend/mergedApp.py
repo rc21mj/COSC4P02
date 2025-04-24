@@ -277,8 +277,7 @@ def submit():
     userid = data.get("userid")
     hashtags = data.get("customHashtags")
     custom_image_option = data.get("customImageOption") 
-    uploaded_image = data.get("uploadedImage")
-
+    uploaded_image = data.get("customImageBase64")
     current_time = datetime.now()
 
     print(userid)
